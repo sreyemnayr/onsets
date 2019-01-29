@@ -1,0 +1,13 @@
+<div class="scene">
+<div [ngClass]="{card: true, 'is-flipped': !flipped}" (click)="flip()">
+  <div class="card__face card__face--front">
+    <div [ngClass]="{circle: true, blue: card.blue}" ></div>
+    <div [ngClass]="{circle: true, red: card.red}"></div>
+    <div [ngClass]="{circle: true, green: card.green}"></div>
+    <div [ngClass]="{circle: true, yellow: card.yellow}"></div>
+  </div>
+  <div class="card__face card__face--back">
+
+  </div>
+</div>
+  </div>

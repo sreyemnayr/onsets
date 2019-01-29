@@ -1,0 +1,45 @@
+.dragme {
+  box-sizing: border-box;
+  border: 0px transparent;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background: transparent;
+  border-radius: 4px;
+  position: relative;
+  z-index: 1;
+
+
+}
+
+.yellow .col {
+  background: #dcd000;
+  color: white;
+  margin: 4px;
+  height: 200px;
+}
+
+.brown {
+  background: #64000e;
+  color: white;
+  padding:4px;
+}
+
+.bottom-border {
+  border-bottom: 5px #fff solid;
+}
+
+.blank {
+  display: inline-block;
+  width: 80%;
+}
+
+h2.float-left, h2.float-right {
+  display: inline-block;
+}
+
+.float-right {
+  float: right;
+}
+

@@ -1,20 +1,61 @@
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
-  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+<!--The content below is only a placeholder and can be replaced.
+<div class="settings" [style.display]="showSettings ? 'block' : 'none'">
+<div><label for="numCards">Cards</label><input id="numCards" #numCards type="number" (change)="displayCards = numCards.valueAsNumber; reconstruct()" value=7 /></div>
+  <div><label for="numNumberCubes">Numeral Cubes</label><input id="numNumberCubes" #numNumberCubes type="number" value=3 (change)="ref.markForCheck()"/></div>
+  <div><label for="numColorCubes">Color Cubes</label><input id="numColorCubes" #numColorCubes type="number"  value=8 (change)="ref.markForCheck()" /></div>
+  <div><label for="numOperationCubes">Red Operation Cubes</label><input id="numOperationCubes" #numOperationCubes type="number"  value=4 (change)="ref.markForCheck()" /></div>
+  <div><label for="numRelationCubes">Blue Relation Cubes</label><input id="numRelationCubes" #numRelationCubes type="number"  value=4 (change)="ref.markForCheck()" /></div>
+
 </div>
-<h2>Here are some links to help you start: </h2>
-<ul>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/tutorial">Tour of Heroes</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://angular.io/cli">CLI Documentation</a></h2>
-  </li>
-  <li>
-    <h2><a target="_blank" rel="noopener" href="https://blog.angular.io/">Angular blog</a></h2>
-  </li>
-</ul>
+<button (click)="showSettings = !showSettings">{{ showSettings ? 'Hide' : 'Show' }} Settings</button>-->
+
+<div class="row">
+  <div class="col-7">
+    <h1>Universe <span *ngIf="universeSet">Set!</span></h1>
+    <app-card style="display: inline-block" *ngFor="let card of universe" [card]="card" [@itemAnim]></app-card><button mat-icon-button (click)="add_card()" *ngIf="universe.length < 12 && !this.universeSet"><mat-icon>library_add</mat-icon></button><button *ngIf="!universeSet" mat-icon-button (click)="universeSet = true;"><mat-icon>check_circle</mat-icon></button></div>
+  <div class="col-5">
+
+    <h2>Resources</h2>
+    <div class="container" *ngIf="universeSet">
+      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(8)"><app-colorcube></app-colorcube> </div>
+      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(3)"><app-numbercube cdkDrag ></app-numbercube></div>
+      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(3)"><app-relationcube   [elementary]="settings.elementary"></app-relationcube></div>
+      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(4)"><app-operationcube  ></app-operationcube></div>
+    <div><button mat-icon-button color="primary" (click)="rollCubes()"><mat-icon>refresh</mat-icon></button></div></div></div>
+</div>
+<div class="container gameboard">
+  <div class="row yellow">
+
+  <div class="col text-center">
+    <h3>Forbidden</h3>
+  </div>
+  <div class="col text-center">
+    <h3>Permitted</h3>
+  </div>
+  <div class="col text-center">
+    <h3>Required</h3>
+  </div>
+
+  </div>
+  <div class="row brown">
+    <div class="col-5 bottom-border text-justify"><h2 class="float-left">Num(</h2><h2 class="float-right">)</h2></div>
+    <div class="col-2 text-center"><h1>=</h1></div>
+    <div class="col-5 bottom-border"><h1>&nbsp;</h1></div>
+  </div>
+  <div class="row brown">
+    <div class="col-5 text-center"><h3>Solution</h3></div>
+    <div class="col-2 text-center"></div>
+    <div class="col-5 text-center"><h3>Goal</h3></div>
+  </div>
+  <div class="row brown">
+    <div class="col-12 bottom-border"><h1>&nbsp;</h1></div>
+  </div>
+  <div class="row brown">
+    <div class="col-12 text-center"><h3>Restriction Statement</h3></div>
+  </div>
+</div>
+<button mat-raised-button color="primary" (click)="reconstruct(); rollCubes();">Reset Game</button>
+
+<button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
+
 
