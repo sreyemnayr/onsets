@@ -1,4 +1,16 @@
-import { Component, ChangeDetectorRef, Output, EventEmitter, ViewChildren, QueryList, Inject } from '@angular/core';
+import {
+  Component,
+  ChangeDetectorRef,
+  Output,
+  EventEmitter,
+  ViewChildren,
+  QueryList,
+  Inject,
+  ReflectiveInjector,
+  Injector, Input,
+} from '@angular/core';
+
+import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 import { Deck } from './equipment/cards/deck';
 
@@ -13,6 +25,8 @@ import { trigger, style, transition, animate, group } from '@angular/animations'
 import {CardComponent} from './equipment/cards/card/card.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField } from '@angular/material';
 import { FormControl } from '@angular/forms';
+import { CUBE } from './equipment/cubes/cube.component';
+import { Cube } from './equipment/cubes/cube';
 
 export interface SettingsDialogData {
   settings: Settings;
@@ -49,9 +63,27 @@ export class AppComponent {
   showSettings: boolean;
   showDice: boolean;
   goalSet: boolean;
-  universeSet: boolean;
+
   stage: number;
   settings: Settings;
+
+  all_resources: Array<any>;
+  number_resources: Array<any>;
+  goal_resources: Array<any>;
+  forbidden_resources: Array<any>;
+  permitted_resources: Array<any>;
+  required_resources: Array<any>;
+
+  private _universeSet = false;
+
+  get universeSet(): boolean {
+    return this._universeSet;
+  }
+
+  @Input() set universeSet(universeSet: boolean) {
+    this._universeSet = universeSet;
+    this.rollCubes();
+  }
 
   @ViewChildren(ColorcubeComponent) colorCubes: QueryList<any>;
   @ViewChildren(RelationcubeComponent) relationCubes: QueryList<any>;
@@ -59,7 +91,34 @@ export class AppComponent {
   @ViewChildren(NumbercubeComponent) numberCubes: QueryList<any>;
   @ViewChildren(CardComponent) cards: QueryList<any>;
 
-  constructor(private ref: ChangeDetectorRef, public settingsDialog: MatDialog) {
+  constructor(private ref: ChangeDetectorRef, public settingsDialog: MatDialog, ) {
+    this.all_resources = [
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new RelationcubeComponent(),
+      new RelationcubeComponent(),
+      new RelationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+
+    ];
+    this.number_resources = [new NumbercubeComponent(),
+      new NumbercubeComponent(),
+      new NumbercubeComponent(), ];
+    this.mix();
+
+    this.goal_resources = [[], [], [], [], [], []];
+    this.forbidden_resources = [];
+    this.permitted_resources = [];
+    this.required_resources = [];
     this.settings = new Settings();
     this.settings.elementary = false;
     this.stage = 0;
@@ -72,6 +131,8 @@ export class AppComponent {
     this.reconstruct();
   }
 
+
+
   openSettings(): void {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.data = {settings: this.settings};
@@ -82,12 +143,40 @@ export class AppComponent {
     });
   }
 
+
   add_card() {
     this.universe.push(this.deck.cards.pop());
     setTimeout(() => { this.cards.forEach( (c) => { c.flip(); }); }, 200);
   }
 
   reconstruct() {
+    this.all_resources = [
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new ColorcubeComponent(),
+      new RelationcubeComponent(),
+      new RelationcubeComponent(),
+      new RelationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+      new OperationcubeComponent(),
+
+    ];
+    this.number_resources = [new NumbercubeComponent(),
+      new NumbercubeComponent(),
+      new NumbercubeComponent(), ];
+    this.mix();
+
+    this.goal_resources = [[], [], [], [], [], []];
+    this.forbidden_resources = [];
+    this.permitted_resources = [];
+    this.required_resources = [];
     this.stage = 0;
     this.universeSet = false;
     this.goalSet = false;
@@ -107,7 +196,37 @@ export class AppComponent {
   }
 
   rollCubes() {
-    const allCubes = [this.numberCubes, this.operationCubes, this.relationCubes, this.colorCubes];
+
+    for (const cube of this.all_resources) {
+      cube.roll();
+    }
+    for (const cube of this.number_resources) {
+      cube.roll();
+    }
+    if (this.settings.fix_rolls) {
+      let relation_cubes = 0;
+      const relation_faces = [0, 0, 0];
+      setTimeout(() => {
+        for ( const cube of this.all_resources ) {
+          if ( cube.constructor.name === 'RelationcubeComponent' ) {
+
+            relation_faces[relation_cubes] = cube.cube.face;
+            relation_cubes++;
+            if ( relation_cubes > 2 ) {
+              if ( relation_faces[0] === relation_faces[1] ) {
+                while(relation_faces[0] === cube.cube.face) {
+                  cube.rand();
+
+                }
+              }
+            }
+
+
+          }
+        }
+      }, 1400);
+    }
+    /*const allCubes = [this.numberCubes, this.operationCubes, this.relationCubes, this.colorCubes];
     for (const cubes of allCubes) {
       cubes.forEach((c) => {
       c.roll();
@@ -123,6 +242,35 @@ export class AppComponent {
         relCubes = this.relationCubes.toArray();
       }
       }, 1200);
+    }*/
+
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    if (event.previousContainer === event.container) {
+      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+    } else {
+      transferArrayItem(event.previousContainer.data,
+                        event.container.data,
+                        event.previousIndex,
+                        event.currentIndex);
+    }
+  }
+
+  mix() {
+    let currentIndex = this.all_resources.length;
+    let temporaryValue, randomIndex;
+
+    // While there remain elements to shuffle...
+    while (0 !== currentIndex) {
+      // Pick a remaining element...
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex -= 1;
+
+      // And swap it with the current element.
+      temporaryValue = this.all_resources[currentIndex];
+      this.all_resources[currentIndex] = this.all_resources[randomIndex];
+      this.all_resources[randomIndex] = temporaryValue;
     }
 
   }

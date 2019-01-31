@@ -9,6 +9,12 @@ import { MatButtonModule, MatFormFieldModule, MatIconModule, MatSlideToggleModul
 import { FormsModule } from '@angular/forms';
 
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import { NumbercubeComponent } from './equipment/cubes/numbercube/numbercube.component';
+import { OperationcubeComponent } from './equipment/cubes/operationcube/operationcube.component';
+import { RelationcubeComponent } from './equipment/cubes/relationcube/relationcube.component';
+import { ColorcubeComponent } from './equipment/cubes/colorcube/colorcube.component';
+
+import { DynamicModule } from 'ng-dynamic-component';
 
 @NgModule({
   declarations: [
@@ -26,6 +32,7 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     FormsModule,
     MatDialogModule,
     DragDropModule,
+    DynamicModule.withComponents([NumbercubeComponent, OperationcubeComponent, RelationcubeComponent, ColorcubeComponent])
   ],
   exports: [
     MatButtonModule,
@@ -34,6 +41,6 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [SettingsDialogComponent]
+  entryComponents: [SettingsDialogComponent, NumbercubeComponent, OperationcubeComponent, RelationcubeComponent, ColorcubeComponent]
 })
 export class AppModule { }

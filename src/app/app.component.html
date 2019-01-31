@@ -8,7 +8,7 @@
 
 </div>
 <button (click)="showSettings = !showSettings">{{ showSettings ? 'Hide' : 'Show' }} Settings</button>-->
-
+<div class="container">
 <div class="row">
   <div class="col-7">
     <h1>Universe <span *ngIf="universeSet">Set!</span></h1>
@@ -16,11 +16,15 @@
   <div class="col-5">
 
     <h2>Resources</h2>
-    <div class="container" *ngIf="universeSet">
-      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(8)"><app-colorcube></app-colorcube> </div>
-      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(3)"><app-numbercube cdkDrag ></app-numbercube></div>
-      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(3)"><app-relationcube   [elementary]="settings.elementary"></app-relationcube></div>
-      <div class="dragme" cdkDrag *ngFor="let cube of arrayNums(4)"><app-operationcube  ></app-operationcube></div>
+    <div class="container" [style.display]="universeSet ? 'block' : 'none'">
+      <div cdkDropList #resourceList="cdkDropList"  [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList, requiredList]" [cdkDropListData]="all_resources" (cdkDropListDropped)="drop($event)">
+        <div class="dragme" cdkDrag *ngFor="let cube of all_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, elementary: settings.elementary}"  ></ng-container></div>
+
+      </div>
+      <div cdkDropList #numberList="cdkDropList"  [cdkDropListConnectedTo]="[goalList0, goalList1, goalList2, goalList3, goalList4, goalList5]" [cdkDropListData]="number_resources" (cdkDropListDropped)="drop($event)">
+        <div class="dragme" cdkDrag *ngFor="let cube of number_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"  ></ng-container></div>
+
+      </div>
     <div><button mat-icon-button color="primary" (click)="rollCubes()"><mat-icon>refresh</mat-icon></button></div></div></div>
 </div>
 <div class="container gameboard">
@@ -28,19 +32,33 @@
 
   <div class="col text-center">
     <h3>Forbidden</h3>
+    <div class="resourceContainer" cdkDropList #forbiddenList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, permittedList, requiredList]" [cdkDropListData]="forbidden_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of forbidden_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"  ></ng-container></div></div>
   </div>
   <div class="col text-center">
     <h3>Permitted</h3>
+    <div class="resourceContainer" cdkDropList #permittedList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, forbiddenList, requiredList]" [cdkDropListData]="permitted_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of permitted_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"  ></ng-container></div></div>
   </div>
   <div class="col text-center">
     <h3>Required</h3>
+     <div class="resourceContainer" cdkDropList #requiredList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList]" [cdkDropListData]="required_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of required_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"  ></ng-container></div></div>
   </div>
 
   </div>
   <div class="row brown">
     <div class="col-5 bottom-border text-justify"><h2 class="float-left">Num(</h2><h2 class="float-right">)</h2></div>
     <div class="col-2 text-center"><h1>=</h1></div>
-    <div class="col-5 bottom-border"><h1>&nbsp;</h1></div>
+    <div class="col-5 bottom-border">
+      <div class="goalListRow"><div class="goalList" #goalList0="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList1, goalList2, goalList3, goalList4, goalList5]" [cdkDropListData]="goal_resources[0]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[0]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+      <div class="goalList" #goalList1="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList0, goalList2, goalList3, goalList4, goalList5]" [cdkDropListData]="goal_resources[1]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[1]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+      <div class="goalList" #goalList2="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList1, goalList0, goalList3, goalList4, goalList5]" [cdkDropListData]="goal_resources[2]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[2]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+        </div>
+       <div class="goalListRow">
+      <div class="goalList" #goalList3="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList1, goalList2, goalList0, goalList4, goalList5]" [cdkDropListData]="goal_resources[3]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[3]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+      <div class="goalList" #goalList4="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList1, goalList2, goalList3, goalList0, goalList5]" [cdkDropListData]="goal_resources[4]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[4]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+      <div class="goalList" #goalList5="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[numberList, goalList1, goalList2, goalList3, goalList4, goalList0]" [cdkDropListData]="goal_resources[5]" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of goal_resources[5]"><ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container></div></div>
+       </div>
+
+    </div>
   </div>
   <div class="row brown">
     <div class="col-5 text-center"><h3>Solution</h3></div>
@@ -58,4 +76,4 @@
 
 <button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
 
-
+</div>

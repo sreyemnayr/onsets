@@ -1,5 +1,7 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, InjectionToken } from '@angular/core';
 import { Cube } from './cube';
+
+export const CUBE = new InjectionToken<Cube>('cube', { providedIn: 'root',  factory: () => new Cube({}) } );
 
 @Component({
   selector: 'app-cube',
@@ -10,9 +12,9 @@ export class CubeComponent implements OnInit {
   @Input() cube: Cube;
 
   constructor() {
-    if (!this.cube) {
+    /*if (!this.cube) {
       this.cube = new Cube({});
-    }
+    }*/
   }
 
   rand() {
@@ -24,14 +26,15 @@ export class CubeComponent implements OnInit {
     const _this = this;
     const intervalID = setInterval(function () {
         _this.rand();
-       if (++x === 30) {
+       if (++x === 15) {
            window.clearInterval(intervalID);
        }
     }, 10);
   }
 
   ngOnInit() {
-    this.roll();
+    this.cube = this.cube || new Cube({});
+
   }
 
 }
