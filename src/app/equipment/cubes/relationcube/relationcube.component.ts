@@ -20,8 +20,13 @@ export class RelationcubeComponent extends CubeComponent  {
   }
 
   set_faces() {
+    if (!this.cube) {
+      this.cube = new Cube({
+        klass: 'relation',
+      });
+    }
     if (this.elementary) {
-      this.cube.face = 0;
+      if (this.cube.face > 1) { this.cube.face = 0; }
       this.cube.faces = [
                   {klass: 'marker', value: 'V'},
                   {klass: 'marker', value: 'Λ'},
@@ -36,7 +41,7 @@ export class RelationcubeComponent extends CubeComponent  {
                     {klass: 'marker', value: 'Λ'},
         ];
     }
-    this.rand();
+
   }
 
   constructor() {
@@ -44,7 +49,10 @@ export class RelationcubeComponent extends CubeComponent  {
     this.cube = new Cube({
         klass: 'relation',
       });
+
     this.set_faces();
+    this.rand();
+
     }
 
 

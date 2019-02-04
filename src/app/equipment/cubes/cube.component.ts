@@ -12,9 +12,7 @@ export class CubeComponent implements OnInit {
   @Input() cube: Cube;
 
   constructor() {
-    /*if (!this.cube) {
-      this.cube = new Cube({});
-    }*/
+   this.cube = this.cube || new Cube({});
   }
 
   rand() {
@@ -33,8 +31,6 @@ export class CubeComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.cube = this.cube || new Cube({});
-
   }
 
 }

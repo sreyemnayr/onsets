@@ -74,6 +74,8 @@ export class AppComponent {
   permitted_resources: Array<any>;
   required_resources: Array<any>;
 
+  goal: number;
+
   private _universeSet = false;
 
   get universeSet(): boolean {
@@ -196,6 +198,7 @@ export class AppComponent {
   }
 
   rollCubes() {
+    this.mix();
 
     for (const cube of this.all_resources) {
       cube.roll();
@@ -214,7 +217,7 @@ export class AppComponent {
             relation_cubes++;
             if ( relation_cubes > 2 ) {
               if ( relation_faces[0] === relation_faces[1] ) {
-                while(relation_faces[0] === cube.cube.face) {
+                while (relation_faces[0] === cube.cube.face) {
                   cube.rand();
 
                 }
@@ -255,6 +258,7 @@ export class AppComponent {
                         event.previousIndex,
                         event.currentIndex);
     }
+    this.goal = this.calculateGoal();
   }
 
   mix() {
@@ -272,6 +276,32 @@ export class AppComponent {
       this.all_resources[currentIndex] = this.all_resources[randomIndex];
       this.all_resources[randomIndex] = temporaryValue;
     }
+
+  }
+
+  calculateValue(cubeArray: Array<any>, number = 0 ) {
+    if (cubeArray.length > 0) {
+      const c = cubeArray[0].cube;
+      if (c.invert) {
+        return parseInt(c.faces[c.face]['value'], 10) * -1;
+      } else {
+        return parseInt(c.faces[c.face]['value'], 10);
+      }
+    } else {
+     return number;
+    }
+    return number;
+  }
+
+  calculateGoal() {
+    const a = this.calculateValue(this.goal_resources[0], 1);
+    const b = this.calculateValue(this.goal_resources[1], 1);
+    const c = this.calculateValue(this.goal_resources[2], 1);
+    const d = this.calculateValue(this.goal_resources[3], 0);
+    const e = this.calculateValue(this.goal_resources[4], 0);
+    const f = this.calculateValue(this.goal_resources[5], 0);
+
+    return (a * b * d) + ( c * ( e + f ) );
 
   }
 
