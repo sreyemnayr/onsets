@@ -1,21 +1,24 @@
 .scene {
-  width: 45px;
-  height: 90px;
+  width: 35px;
+  height: 70px;
+
 
   /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
   @media (min-width: 768px) {
    width: 50px;
   height: 100px;
+    margin: 2px;
   }
 
   /* Large devices (desktops, 992px and up) */
   @media (min-width: 992px) {
    width: 70px;
   height: 140px;
+    margin: 2px;
   }
-
+  margin: 1px;
   perspective: 600px;
-  margin: 2px;
+
 }
 .card {
   height: 100%;
@@ -24,15 +27,25 @@
   border-radius: 5%;
   display: inline-block;
   position: relative;
-  padding:4px;
-  margin: 2px;
+  padding:2px;
+  margin: 1px;
+  background: white;
+
   transform-style: preserve-3d;
   transition: transform 0.5s;
   box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
 
+  /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
+  @media (min-width: 768px) {
+    padding:4px;
+    margin: 2px;
+  }
+
+
 }
 
 .card__face {
+
   position: absolute;
   height: 90%;
   width: 90%;
@@ -41,10 +54,17 @@
 
 .card__face--front {
   background: white;
+
 }
 
 .card__face--back {
-  background: red;
+  background: #c94b4b;  /* fallback for old browsers */
+  background-image: url("../../../../assets/back.png"), -webkit-linear-gradient(to right, #4f2023, #4f2814);  /* Chrome 10-25, Safari 5.1-6 */
+  background: url("../../../../assets/back.png"), linear-gradient(to right, #a3373d, #8e2c20); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+
+  background-size:contain;
+  background-position: center;
+  background-repeat: no-repeat;
   transform: rotateY( 180deg ) ;
 }
 
@@ -53,13 +73,14 @@
 }
 
 .circle {
-  width: 10px;
-  height: 10px;
+  width: 12px;
+  height: 12px;
 
   /* Medium devices (tablets, 768px and up) The navbar toggle appears at this breakpoint */
   @media (min-width: 768px) {
-   height: 15px;
-  width: 15px;
+   height: 20px;
+  width: 20px;
+    border-width: 2px !important;
   }
 
   /* Large devices (desktops, 992px and up) */
@@ -74,26 +95,27 @@
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 2px;
-  border: 2px transparent solid;
+  border: transparent solid;
+  border-width:1px !important;
 
 }
 .blue {
     background-color: rgb(0, 0, 255);
-    border: 2px #000000 solid;
+    border: #000000 solid;
   }
 .red {
     background-color: rgb(255, 0, 0);
-    border: 2px #000000 solid;
+    border: #000000 solid;
 
 }
 .green {
   background-color: rgb(0, 255, 0);
-  border: 2px #000000 solid;
+  border: #000000 solid;
 
 }
 .yellow {
   background-color: rgb(255, 255, 0);
-  border: 2px #000000 solid;
+  border: #000000 solid;
 
 }
 

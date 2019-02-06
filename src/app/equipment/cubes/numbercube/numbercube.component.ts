@@ -9,6 +9,10 @@ import {Cube} from '../cube';
 })
 export class NumbercubeComponent extends CubeComponent  {
 
+  handle_doubleclick() {
+    this.cube.invert = !this.cube.invert;
+  }
+
   constructor() {
     super();
     this.cube = new Cube({

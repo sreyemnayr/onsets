@@ -30,6 +30,10 @@ export class CubeComponent implements OnInit {
     }, 10);
   }
 
+  handle_doubleclick() {
+    this.roll();
+  }
+
   ngOnInit() {
   }
 

@@ -23,7 +23,7 @@ import {Settings} from './settings';
 
 import { trigger, style, transition, animate, group } from '@angular/animations';
 import {CardComponent} from './equipment/cards/card/card.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField, MatSnackBar } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { CUBE } from './equipment/cubes/cube.component';
 import { Cube } from './equipment/cubes/cube';
@@ -74,6 +74,8 @@ export class AppComponent {
   permitted_resources: Array<any>;
   required_resources: Array<any>;
 
+  canSetUniverse = false;
+
   goal: number;
 
   private _universeSet = false;
@@ -84,6 +86,7 @@ export class AppComponent {
 
   @Input() set universeSet(universeSet: boolean) {
     this._universeSet = universeSet;
+
     this.rollCubes();
   }
 
@@ -93,7 +96,7 @@ export class AppComponent {
   @ViewChildren(NumbercubeComponent) numberCubes: QueryList<any>;
   @ViewChildren(CardComponent) cards: QueryList<any>;
 
-  constructor(private ref: ChangeDetectorRef, public settingsDialog: MatDialog, ) {
+  constructor(private ref: ChangeDetectorRef, public settingsDialog: MatDialog, private snackBar: MatSnackBar) {
     this.all_resources = [
       new ColorcubeComponent(),
       new ColorcubeComponent(),
@@ -122,7 +125,10 @@ export class AppComponent {
     this.permitted_resources = [];
     this.required_resources = [];
     this.settings = new Settings();
-    this.settings.elementary = false;
+    this.settings.elementary = true;
+    this.settings.fix_rolls = true;
+    this.settings.auto_deal_minimum = true;
+    this.settings.show_goal = false;
     this.stage = 0;
     this.universeSet = false;
     this.goalSet = false;
@@ -149,6 +155,21 @@ export class AppComponent {
   add_card() {
     this.universe.push(this.deck.cards.pop());
     setTimeout(() => { this.cards.forEach( (c) => { c.flip(); }); }, 200);
+    if (this.settings.elementary) {
+      if (this.universe.length >= 6 ) {
+        this.canSetUniverse = true;
+      }
+      if (this.universe.length >= 12 ) {
+        this.universeSet = true;
+      }
+    } else {
+      if (this.universe.length >= 10 ) {
+        this.canSetUniverse = true;
+      }
+      if (this.universe.length >= 14) {
+        this.universeSet = true;
+      }
+    }
   }
 
   reconstruct() {
@@ -181,16 +202,19 @@ export class AppComponent {
     this.required_resources = [];
     this.stage = 0;
     this.universeSet = false;
+    this.canSetUniverse = false;
     this.goalSet = false;
     this.universe = [];
     this.deck = new Deck();
     this.deck.shuffle();
 
-    for (const i of this.arrayNums(6)) {
-      this.universe.push(this.deck.cards.pop());
+    if ( this.settings.auto_deal_minimum ) {
+      const minimum_cards = this.settings.elementary ? 6 : 10;
+      for (const i of this.arrayNums(minimum_cards)) {
+        this.add_card();
+      }
     }
 
-    setTimeout(() => { this.cards.forEach( (c) => { c.flip(); }); }, 200);
   }
 
   arrayNums(n) {
@@ -316,6 +340,10 @@ export class AppComponent {
         <mat-slide-toggle [(ngModel)]="data.settings.elementary" >Elementary Mode?</mat-slide-toggle>
         </div><div>
         <mat-slide-toggle [(ngModel)]="data.settings.fix_rolls" >Fix Illegal Rolls?</mat-slide-toggle>
+      </div><div>
+        <mat-slide-toggle [(ngModel)]="data.settings.auto_deal_minimum" >Auto-Deal Universe Minimum?</mat-slide-toggle>
+      </div><div>
+        <mat-slide-toggle [(ngModel)]="data.settings.show_goal" >Calculate and Show Goal?</mat-slide-toggle>
       </div>
     </div>
     <div mat-dialog-actions>
@@ -333,3 +361,5 @@ export class SettingsDialogComponent {
     }
 
 }
+
+

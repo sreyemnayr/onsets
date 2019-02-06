@@ -354,6 +354,8 @@ MIT
 
 @angular/material/button
 
+@angular/material/snack-bar
+
 @angular/material/icon
 
 ng-dynamic-component
