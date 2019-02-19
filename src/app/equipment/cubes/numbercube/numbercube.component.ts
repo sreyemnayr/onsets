@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CubeComponent} from '../cube.component';
-import {Cube} from '../cube';
+import { Cube, IDENTIFIER } from '../cube';
 
 @Component({
   selector: 'app-numbercube',
@@ -18,12 +18,12 @@ export class NumbercubeComponent extends CubeComponent  {
     this.cube = new Cube({
                   klass: 'number',
                   faces: [
-                  {klass: 'number', value: '1'},
-                  {klass: 'number', value: '2'},
-                  {klass: 'number', value: '3'},
-                  {klass: 'number', value: '4'},
-                  {klass: 'number', value: '5'},
-                  {klass: 'number', value: '1'},
+                  {klass: 'number', value: '1', functions_as: IDENTIFIER},
+                  {klass: 'number', value: '2', functions_as: IDENTIFIER},
+                  {klass: 'number', value: '3', functions_as: IDENTIFIER},
+                  {klass: 'number', value: '4', functions_as: IDENTIFIER},
+                  {klass: 'number', value: '5', functions_as: IDENTIFIER},
+                  {klass: 'number', value: '1', functions_as: IDENTIFIER},
       ]});
   }
 

@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { Cube } from '../cube';
+import { Cube, IDENTIFIER } from '../cube';
 import {CubeComponent} from '../cube.component';
 
 @Component({
@@ -15,12 +15,12 @@ export class ColorcubeComponent extends CubeComponent  {
     this.cube = new Cube({
                   klass: 'color',
                   faces: [
-                  {klass: 'circle red', value: ''},
-                  {klass: 'circle red', value: ''},
-                  {klass: 'circle blue', value: ''},
-                  {klass: 'circle blue', value: ''},
-                  {klass: 'circle green', value: ''},
-                  {klass: 'circle yellow', value: ''},
+                  {klass: 'circle red', value: 'R', functions_as: IDENTIFIER},
+                  {klass: 'circle red', value: 'R', functions_as: IDENTIFIER},
+                  {klass: 'circle blue', value: 'B', functions_as: IDENTIFIER},
+                  {klass: 'circle blue', value: 'B', functions_as: IDENTIFIER},
+                  {klass: 'circle green', value: 'G', functions_as: IDENTIFIER},
+                  {klass: 'circle yellow', value: 'Y', functions_as: IDENTIFIER},
       ]});
   }
 

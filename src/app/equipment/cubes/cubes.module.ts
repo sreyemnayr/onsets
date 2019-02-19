@@ -6,11 +6,12 @@ import { NumbercubeComponent } from './numbercube/numbercube.component';
 import { ColorcubeComponent } from './colorcube/colorcube.component';
 import { CubeComponent } from './cube.component';
 import { DragDropModule} from '@angular/cdk/drag-drop';
+import { MatButtonModule, MatIconModule } from '@angular/material';
 
 @NgModule({
   declarations: [RelationcubeComponent, OperationcubeComponent, NumbercubeComponent, ColorcubeComponent, CubeComponent],
   imports: [
-    CommonModule, DragDropModule
+    CommonModule, DragDropModule, MatIconModule, MatButtonModule,
   ],
   exports: [RelationcubeComponent, OperationcubeComponent, NumbercubeComponent, ColorcubeComponent, CubeComponent]
 })

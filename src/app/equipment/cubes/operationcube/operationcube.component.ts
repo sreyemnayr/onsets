@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {CubeComponent} from '../cube.component';
-import {Cube} from '../cube';
+import { Cube, IDENTIFIER, MODIFIER, OPERATOR } from '../cube';
 
 @Component({
   selector: 'app-operationcube',
@@ -14,12 +14,12 @@ export class OperationcubeComponent extends CubeComponent  {
     this.cube = new Cube({
                   klass: 'operation',
                   faces: [
-                  {klass: '', value: '—'},
-                  {klass: '', value: '´'},
-                  {klass: 'marker', value: '∪'},
-                  {klass: 'marker', value: '∪'},
-                  {klass: 'marker', value: '∩'},
-                  {klass: 'marker', value: '∩'},
+                  {klass: '', value: '—', functions_as: OPERATOR},
+                  {klass: '', value: '´', functions_as: MODIFIER},
+                  {klass: 'marker', value: '∪', functions_as: OPERATOR},
+                  {klass: 'marker', value: '∪', functions_as: OPERATOR},
+                  {klass: 'marker', value: '∩', functions_as: OPERATOR},
+                  {klass: 'marker', value: '∩', functions_as: OPERATOR},
       ]});
   }
 

@@ -7,9 +7,13 @@ div {
   box-shadow: 0 0 10px 5px #f0f;
 }
 
+.cube {
+  transform: rotate(0);
+  transition: transform 200ms;
+}
+
 .invert {
   transform: rotate(180deg);
   transition: transform 200ms;
 }
-
 

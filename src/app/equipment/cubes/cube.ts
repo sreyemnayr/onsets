@@ -1,3 +1,7 @@
+export const OPERATOR = 1;
+export const IDENTIFIER = 2;
+export const MODIFIER = 3;
+
 export class Cube {
   sides: number;
   faces: Array<any>;
@@ -10,12 +14,12 @@ export class Cube {
                 klass= 'traditional',
                 sides= 6,
                 faces= [
-                  {klass: 'num', value: '1'},
-                  {klass: 'num', value: '2'},
-                  {klass: 'num', value: '3'},
-                  {klass: 'num', value: '4'},
-                  {klass: 'num', value: '5'},
-                  {klass: 'num', value: '6'}
+                  {klass: 'num', value: '1', functions_as: IDENTIFIER},
+                  {klass: 'num', value: '2', functions_as: IDENTIFIER},
+                  {klass: 'num', value: '3', functions_as: IDENTIFIER},
+                  {klass: 'num', value: '4', functions_as: IDENTIFIER},
+                  {klass: 'num', value: '5', functions_as: IDENTIFIER},
+                  {klass: 'num', value: '6', functions_as: IDENTIFIER}
                   ],
                 face= 0,
                 selected= false,

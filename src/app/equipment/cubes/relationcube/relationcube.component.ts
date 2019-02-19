@@ -1,6 +1,6 @@
 import {Component, Input, OnInit} from '@angular/core';
 import {CubeComponent} from '../cube.component';
-import {Cube} from '../cube';
+import { Cube, IDENTIFIER, OPERATOR } from '../cube';
 
 @Component({
   selector: 'app-relationcube',
@@ -28,17 +28,17 @@ export class RelationcubeComponent extends CubeComponent  {
     if (this.elementary) {
       if (this.cube.face > 1) { this.cube.face = 0; }
       this.cube.faces = [
-                  {klass: 'marker', value: 'V'},
-                  {klass: 'marker', value: 'Λ'},
+                  {klass: 'marker', value: 'V', functions_as: IDENTIFIER},
+                  {klass: 'marker', value: 'Λ', functions_as: IDENTIFIER},
       ];
     } else {
       this.cube.faces = [
-                    {klass: '', value: '⊆'},
-                    {klass: '', value: '⊆'},
-                    {klass: '', value: '='},
-                    {klass: '', value: '='},
-                    {klass: 'marker', value: 'V'},
-                    {klass: 'marker', value: 'Λ'},
+                    {klass: '', value: '⊆', functions_as: OPERATOR},
+                    {klass: '', value: '⊆', functions_as: OPERATOR},
+                    {klass: '', value: '=', functions_as: OPERATOR},
+                    {klass: '', value: '=', functions_as: OPERATOR},
+                    {klass: 'marker', value: 'V', functions_as: IDENTIFIER},
+                    {klass: 'marker', value: 'Λ', functions_as: IDENTIFIER},
         ];
     }
 

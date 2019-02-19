@@ -27,6 +27,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideTogg
 import { FormControl } from '@angular/forms';
 import { CUBE } from './equipment/cubes/cube.component';
 import { Cube } from './equipment/cubes/cube';
+import { PermutationsService } from './algorithms/permutations.service';
 
 export interface SettingsDialogData {
   settings: Settings;
@@ -96,7 +97,10 @@ export class AppComponent {
   @ViewChildren(NumbercubeComponent) numberCubes: QueryList<any>;
   @ViewChildren(CardComponent) cards: QueryList<any>;
 
-  constructor(private ref: ChangeDetectorRef, public settingsDialog: MatDialog, private snackBar: MatSnackBar) {
+  constructor(private ref: ChangeDetectorRef,
+              public settingsDialog: MatDialog,
+              private snackBar: MatSnackBar,
+              private ps: PermutationsService) {
     this.all_resources = [
       new ColorcubeComponent(),
       new ColorcubeComponent(),
@@ -283,6 +287,27 @@ export class AppComponent {
                         event.currentIndex);
     }
     this.goal = this.calculateGoal();
+    // this.evaluate_solutions();
+  }
+
+  evaluate_solutions() {
+    const combos = [];
+
+    const resources = this.permitted_resources.concat(this.required_resources);
+    for (let i = 1; i <= resources.length; i++) {
+      for (const c of this.ps.combine(resources, i)) {
+        for ( const permutation of this.ps.permute( c ) ) {
+        let s = '';
+        for (const p of permutation) {
+          //s += ' ' + p.cube.faces[p.cube.face].value;
+          combos.push(p);
+        }
+        //console.log(s);
+      }
+      }
+      // console.log(combos);
+    }
+    return combos;
   }
 
   mix() {
