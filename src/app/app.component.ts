@@ -28,6 +28,7 @@ import { FormControl } from '@angular/forms';
 import { CUBE } from './equipment/cubes/cube.component';
 import { Cube } from './equipment/cubes/cube';
 import { PermutationsService } from './algorithms/permutations.service';
+import { SetsService } from './algorithms/sets.service';
 
 export interface SettingsDialogData {
   settings: Settings;
@@ -60,6 +61,12 @@ export class AppComponent {
   displayCards: number;
   deck: any;
   universe: Array<Card>;
+  set_R: Set<number>;
+  set_B: Set<number>;
+  set_G: Set<number>;
+  set_Y: Set<number>;
+  set_V: Set<number>;
+
   numCards: any;
   showSettings: boolean;
   showDice: boolean;
@@ -87,6 +94,27 @@ export class AppComponent {
 
   @Input() set universeSet(universeSet: boolean) {
     this._universeSet = universeSet;
+    this.set_R.clear();
+    this.set_B.clear();
+    this.set_G.clear();
+    this.set_Y.clear();
+    this.set_V.clear();
+
+    this.universe.forEach((c, i) => {
+        if (c.red) { this.set_R.add(i); }
+        if (c.blue) { this.set_B.add(i); }
+        if (c.yellow) { this.set_Y.add(i); }
+        if (c.green) { this.set_G.add(i); }
+        this.set_V.add(i);
+    });
+    console.log('Blue', this.set_B.size);
+    console.log('Red', this.set_R.size);
+    console.log('Red u Blue', this.sets.union(this.set_R, this.set_B).size);
+    console.log('Red ∩ Blue', this.sets.intersection(this.set_R, this.set_B).size);
+    console.log('Yellow', this.set_Y.size);
+    console.log('Green', this.set_G.size);
+    console.log('Green u Yellow', this.sets.union(this.set_G, this.set_Y).size);
+    console.log('Green ∩ Yellow', this.sets.intersection(this.set_G, this.set_Y).size);
 
     this.rollCubes();
   }
@@ -100,7 +128,8 @@ export class AppComponent {
   constructor(private ref: ChangeDetectorRef,
               public settingsDialog: MatDialog,
               private snackBar: MatSnackBar,
-              private ps: PermutationsService) {
+              private ps: PermutationsService,
+              private sets: SetsService) {
     this.all_resources = [
       new ColorcubeComponent(),
       new ColorcubeComponent(),
@@ -134,9 +163,15 @@ export class AppComponent {
     this.settings.auto_deal_minimum = true;
     this.settings.show_goal = false;
     this.stage = 0;
-    this.universeSet = false;
+
     this.goalSet = false;
     this.universe = [];
+    this.set_R = new Set();
+    this.set_B = new Set();
+    this.set_Y = new Set();
+    this.set_G = new Set();
+    this.set_V = new Set();
+    this.universeSet = false;
     this.displayCards = 6;
     this.showSettings = true;
     this.showDice = true;
@@ -291,23 +326,30 @@ export class AppComponent {
   }
 
   evaluate_solutions() {
-    const combos = [];
+    console.time('test');
 
-    const resources = this.permitted_resources.concat(this.required_resources);
-    for (let i = 1; i <= resources.length; i++) {
+    const valid_equations = [];
+
+    const resources = this.ps.hashCubes(this.permitted_resources.concat(this.required_resources));
+    const required = this.ps.hashCubes(this.required_resources);
+    console.log("Required: ", required);
+    for (let i = 2; i <= resources.length; i++) {
       for (const c of this.ps.combine(resources, i)) {
-        for ( const permutation of this.ps.permute( c ) ) {
-        let s = '';
-        for (const p of permutation) {
-          //s += ' ' + p.cube.faces[p.cube.face].value;
-          combos.push(p);
+        if (this.ps.checkValidCombo(c, required)) {
+          for ( const permutation of this.ps.permute( c ) ) {
+            let s = '';
+            for (const p of permutation) {
+              s += ' ' + this.ps.hash_to_string(p);
+            }
+            valid_equations.push(s);
+            //console.log(s);
+          }
         }
-        //console.log(s);
-      }
       }
       // console.log(combos);
     }
-    return combos;
+    console.timeEnd('test');
+    console.log(valid_equations);
   }
 
   mix() {
