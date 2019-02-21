@@ -8,31 +8,31 @@ import {
   Inject,
   Injectable,
   ReflectiveInjector,
-  Injector, Input,
+  Injector, Input, OnInit,
 } from '@angular/core';
 
 import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
 
 
-import { Deck } from './equipment/cards/deck';
+import { Deck } from '../equipment/cards/deck';
 
-import {NumbercubeComponent} from './equipment/cubes/numbercube/numbercube.component';
-import {ColorcubeComponent} from './equipment/cubes/colorcube/colorcube.component';
-import {RelationcubeComponent} from './equipment/cubes/relationcube/relationcube.component';
-import {OperationcubeComponent} from './equipment/cubes/operationcube/operationcube.component';
-import {Card} from './equipment/cards/card/card';
-import {Settings} from './settings';
+import {NumbercubeComponent} from '../equipment/cubes/numbercube/numbercube.component';
+import {ColorcubeComponent} from '../equipment/cubes/colorcube/colorcube.component';
+import {RelationcubeComponent} from '../equipment/cubes/relationcube/relationcube.component';
+import {OperationcubeComponent} from '../equipment/cubes/operationcube/operationcube.component';
+import {Card} from '../equipment/cards/card/card';
+import {Settings} from '../settings';
 
-import {LocalstorageService} from './storage/localstorage.service';
+import {LocalstorageService} from '../storage/localstorage.service';
 
 import { trigger, style, transition, animate, group } from '@angular/animations';
-import {CardComponent} from './equipment/cards/card/card.component';
+import {CardComponent} from '../equipment/cards/card/card.component';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField, MatSnackBar } from '@angular/material';
 import { FormControl } from '@angular/forms';
-import { CUBE } from './equipment/cubes/cube.component';
-import { Cube } from './equipment/cubes/cube';
-import { PermutationsService } from './algorithms/permutations.service';
-import { SetsService } from './algorithms/sets.service';
+import { CUBE } from '../equipment/cubes/cube.component';
+import { Cube } from '../equipment/cubes/cube';
+import { PermutationsService } from '../algorithms/permutations.service';
+import { SetsService } from '../algorithms/sets.service';
 
 
 export interface SettingsDialogData {
@@ -40,9 +40,9 @@ export interface SettingsDialogData {
 }
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
+  selector: 'app-game',
+  templateUrl: './game.component.html',
+  styleUrls: [ './game.component.scss'],
   animations: [
     trigger('itemAnim', [
       transition(':enter', [
@@ -61,7 +61,7 @@ export interface SettingsDialogData {
 
 
 })
-export class AppComponent {
+export class GameComponent implements OnInit {
   title = 'onsets';
   displayCards: number;
   deck: any;
@@ -398,6 +398,9 @@ export class AppComponent {
 
     return (a * b * d) + ( c * ( e + f ) );
 
+  }
+
+  ngOnInit() {
   }
 
 }
