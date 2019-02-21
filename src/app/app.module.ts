@@ -1,3 +1,4 @@
+
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -10,9 +11,10 @@ import {
   MatFormFieldModule,
   MatIconModule,
   MatSlideToggleModule,
+  MatInputModule,
   MatDialogModule,
   MatSnackBarModule,
-  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS, MatProgressBarModule,
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import {DragDropModule} from '@angular/cdk/drag-drop';
@@ -27,12 +29,14 @@ import { ColorcubeComponent } from './equipment/cubes/colorcube/colorcube.compon
 
 import { DynamicModule } from 'ng-dynamic-component';
 import { GameComponent, SettingsDialogComponent } from './game/game.component';
+import { TimerComponent } from './timer/timer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsDialogComponent,
-    GameComponent
+    GameComponent,
+    TimerComponent
   ],
   imports: [
     BrowserModule,
@@ -48,11 +52,15 @@ import { GameComponent, SettingsDialogComponent } from './game/game.component';
     DragDropModule,
     DynamicModule.withComponents([NumbercubeComponent, OperationcubeComponent, RelationcubeComponent, ColorcubeComponent]),
     StorageServiceModule,
+    MatInputModule,
+    MatProgressBarModule,
   ],
   exports: [
     MatButtonModule,
     MatFormFieldModule,
     MatSlideToggleModule,
+    MatInputModule,
+    MatProgressBarModule,
   ],
   providers: [{provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}],
   bootstrap: [AppComponent],

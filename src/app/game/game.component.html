@@ -9,6 +9,9 @@
 </div>
 <button (click)="showSettings = !showSettings">{{ showSettings ? 'Hide' : 'Show' }} Settings</button>-->
 <div class="container">
+    <app-timer #timer [playerClass]="currentPlayer" [playerName]="currentPlayerName" ></app-timer>
+</div>
+<div class="container">
 <div class="d-flex flex-column flex-lg-row ">
   <div class="p-2 d-flex flex-grow-0 w-100">
     <div class=" d-flex flex-wrap flex-md-nowrap flex-md-row w-100">
@@ -42,6 +45,7 @@
       </div>
   </div>
 </div>
+
 <div class="container gameboard">
   <div class="row yellow">
 
@@ -83,7 +87,7 @@
   <div class="row brown">
     <div class="col-5 text-center"><h4>Solution</h4></div>
     <div class="col-2 text-center"></div>
-    <div class="col-5 text-center"><h4>Goal <button *ngIf="!goalSet" mat-icon-button (click)="goal = calculateGoal(); goalSet = true; snackBar.open('Goal Set!');"><mat-icon>check_circle</mat-icon></button><span *ngIf="goalSet && settings.show_goal"> = {{ goal }}</span></h4></div>
+    <div class="col-5 text-center"><h4>Goal <button *ngIf="!goalSet" mat-icon-button (click)="goal = calculateGoal(); goalSet = true; cyclePlayers(); snackBar.open('Goal Set!');"><mat-icon>check_circle</mat-icon></button><span *ngIf="goalSet && settings.show_goal"> = {{ goal }}</span></h4></div>
   </div>
   <div class="row brown">
     <div class="col-12 bottom-border"><h1>&nbsp;</h1></div>

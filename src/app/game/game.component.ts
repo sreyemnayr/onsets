@@ -27,13 +27,14 @@ import {LocalstorageService} from '../storage/localstorage.service';
 
 import { trigger, style, transition, animate, group } from '@angular/animations';
 import {CardComponent} from '../equipment/cards/card/card.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField, MatSnackBar } from '@angular/material';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField, MatSnackBar, MatInput } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { CUBE } from '../equipment/cubes/cube.component';
 import { Cube } from '../equipment/cubes/cube';
 import { PermutationsService } from '../algorithms/permutations.service';
 import { SetsService } from '../algorithms/sets.service';
 
+import { TimerComponent } from '../timer/timer.component';
 
 export interface SettingsDialogData {
   settings: Settings;
@@ -77,6 +78,8 @@ export class GameComponent implements OnInit {
   showDice: boolean;
   goalSet: boolean;
 
+  timer: TimerComponent;
+
   stage: number;
   settings: Settings;
 
@@ -88,6 +91,12 @@ export class GameComponent implements OnInit {
   required_resources: Array<any>;
 
   canSetUniverse = false;
+
+  currentPlayer = 'player1';
+  currentPlayerName = 'Player 1';
+
+  playerStyles;
+  playerIterator;
 
   goal: number;
 
@@ -122,6 +131,7 @@ export class GameComponent implements OnInit {
     console.log('Green ∩ Yellow', this.sets.intersection(this.set_G, this.set_Y).size);
 
     this.rollCubes();
+    if (this._universeSet) { this.cyclePlayers(); }
   }
 
   @ViewChildren(ColorcubeComponent) colorCubes: QueryList<any>;
@@ -191,6 +201,8 @@ export class GameComponent implements OnInit {
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
       this.settings = this.storage.saveSettings(result);
+      this.setPlayerColors();
+      this.playerIterator = this.nextPlayer();
     });
   }
 
@@ -325,6 +337,9 @@ export class GameComponent implements OnInit {
                         event.container.data,
                         event.previousIndex,
                         event.currentIndex);
+      if (this.goalSet && this.universeSet) {
+        this.cyclePlayers();
+      }
     }
     this.goal = this.calculateGoal();
     // this.evaluate_solutions();
@@ -400,7 +415,48 @@ export class GameComponent implements OnInit {
 
   }
 
+  setPlayerColors() {
+    const css1 = '.player1 .mat-progress-bar-fill::after {\n' +
+      '    background-color: ' +
+      this.settings.player_colors[0] +
+      ' !important;\n' +
+      '}';
+    const css2 = '.player2 .mat-progress-bar-fill::after {\n' +
+      '    background-color: ' +
+      this.settings.player_colors[1] +
+      ' !important;\n' +
+      '}';
+    const css3 = '.player3 .mat-progress-bar-fill::after {\n' +
+      '    background-color: ' +
+      this.settings.player_colors[2] +
+      ' !important;\n' +
+      '}';
+    const head = document.getElementsByTagName('head')[0];
+    // const styletag = document.createElement('style');
+    this.playerStyles.innerHTML = '';
+    this.playerStyles.type = 'text/css';
+    this.playerStyles.appendChild(document.createTextNode(css1));
+    this.playerStyles.appendChild(document.createTextNode(css2));
+    this.playerStyles.appendChild(document.createTextNode(css3));
+    head.appendChild(this.playerStyles);
+  }
+
+  cyclePlayers() {
+    const _ = this.playerIterator.next();
+    // this.timer.startTimer();
+  }
+
+  *nextPlayer() {
+    while (true) {
+      for (const n of this.arrayNums(this.settings.num_players)) { this.currentPlayer = `player${ n + 1 }`; this.currentPlayerName = this.settings.player_names[n]; yield n; }
+    }
+  }
+
   ngOnInit() {
+    this.playerStyles = document.createElement('style');
+    this.setPlayerColors();
+    this.playerIterator = this.nextPlayer();
+    this.playerIterator.next();
   }
 
 }
@@ -408,6 +464,7 @@ export class GameComponent implements OnInit {
 @Component({
   selector: 'app-settings-dialog',
   template: `
+    <ng-template #human><mat-icon>person</mat-icon></ng-template><ng-template #cpu><mat-icon>android</mat-icon></ng-template>
   <h1 mat-dialog-title>Settings</h1>
     <div mat-dialog-content>
       <div>
@@ -422,7 +479,50 @@ export class GameComponent implements OnInit {
         <mat-slide-toggle [(ngModel)]="data.settings.allow_reroll" >Allow re-rolls?</mat-slide-toggle>
       </div><div>
         <mat-slide-toggle [(ngModel)]="data.settings.dev_mode" >Development mode?</mat-slide-toggle>
-      </div>
+      </div><div>
+        <mat-form-field>
+          <input matInput type="number" placeholder="Number of Players?" [(ngModel)]="data.settings.num_players" min="2" max="3" />
+        </mat-form-field>
+    </div><div>
+        <mat-form-field>
+          <input matInput type="text" placeholder="Player 1 Name" [(ngModel)]="data.settings.player_names[0]">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="color" placeholder="Player 1 Color" [(ngModel)]="data.settings.player_colors[0]">
+        </mat-form-field>
+
+          <mat-slide-toggle [(ngModel)]="data.settings.player_human[0]" placeholder="Controlled by?">
+            <span *ngIf="data.settings.player_human[0]; then human else cpu"></span>
+
+          </mat-slide-toggle>
+
+    </div><div>
+        <mat-form-field>
+          <input matInput type="text" placeholder="Player 2 Name" [(ngModel)]="data.settings.player_names[1]">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="color" placeholder="Player 2 Color" [(ngModel)]="data.settings.player_colors[1]">
+        </mat-form-field>
+
+          <mat-slide-toggle [(ngModel)]="data.settings.player_human[1]" placeholder="Controlled by?">
+            <span *ngIf="data.settings.player_human[1]; then human else cpu"></span>
+
+          </mat-slide-toggle>
+
+    </div><div *ngIf="data.settings.num_players > 2">
+        <mat-form-field>
+          <input matInput type="text" placeholder="Player 3 Name" [(ngModel)]="data.settings.player_names[2]">
+        </mat-form-field>
+        <mat-form-field>
+          <input matInput type="color" placeholder="Player 3 Color" [(ngModel)]="data.settings.player_colors[2]">
+        </mat-form-field>
+
+          <mat-slide-toggle [(ngModel)]="data.settings.player_human[2]" placeholder="Controlled by?">
+            <span *ngIf="data.settings.player_human[2]; then human else cpu"></span>
+
+          </mat-slide-toggle>
+
+    </div>
     </div>
     <div mat-dialog-actions>
       <button mat-button (click)="onNoClick()">OK</button>
