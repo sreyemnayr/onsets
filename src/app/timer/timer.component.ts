@@ -38,6 +38,7 @@ export class TimerComponent implements OnInit {
   startTimer() {
     this.progressbarValue = 100;
     const time = this.seconds;
+    this.curSec = 0;
     const timer$ = interval(1000);
     if(this.sub) { this.sub.unsubscribe(); }
 

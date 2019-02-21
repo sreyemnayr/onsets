@@ -37,7 +37,7 @@
           </div>
         </div>
         <div>
-          <button *ngIf="!goalSet" mat-icon-button color="primary" (click)="rollCubes()">
+          <button *ngIf="!goalSet && settings.allow_reroll" mat-icon-button color="primary" (click)="rollCubes()">
             <mat-icon>refresh</mat-icon>
           </button>
         </div>
@@ -96,7 +96,7 @@
     <div class="col-12 text-center"><h4>Restriction Statement</h4></div>
   </div>
 </div>
-<button mat-raised-button color="primary" (click)="reconstruct(); rollCubes();">Reset Game</button>
+<button mat-raised-button color="primary" (click)="reconstruct(); rollCubes();  cyclePlayers();">Reset Game</button>
 
 <button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
   <button *ngIf="settings.dev_mode" mat-raised-button color="accent" (click)="evaluate_solutions()">Test Evaluator</button>
