@@ -8,26 +8,46 @@ import {
   Inject,
   Injectable,
   ReflectiveInjector,
-  Injector, Input, OnInit,
+  Injector,
+  Input,
+  OnInit
 } from '@angular/core';
 
-import {CdkDragDrop, moveItemInArray, transferArrayItem} from '@angular/cdk/drag-drop';
-
+import {
+  CdkDragDrop,
+  moveItemInArray,
+  transferArrayItem
+} from '@angular/cdk/drag-drop';
 
 import { Deck } from '../equipment/cards/deck';
 
-import {NumbercubeComponent} from '../equipment/cubes/numbercube/numbercube.component';
-import {ColorcubeComponent} from '../equipment/cubes/colorcube/colorcube.component';
-import {RelationcubeComponent} from '../equipment/cubes/relationcube/relationcube.component';
-import {OperationcubeComponent} from '../equipment/cubes/operationcube/operationcube.component';
-import {Card} from '../equipment/cards/card/card';
-import {Settings} from '../settings';
+import { NumbercubeComponent } from '../equipment/cubes/numbercube/numbercube.component';
+import { ColorcubeComponent } from '../equipment/cubes/colorcube/colorcube.component';
+import { RelationcubeComponent } from '../equipment/cubes/relationcube/relationcube.component';
+import { OperationcubeComponent } from '../equipment/cubes/operationcube/operationcube.component';
+import { Card } from '../equipment/cards/card/card';
+import { Settings } from '../settings';
 
-import {LocalstorageService} from '../storage/localstorage.service';
+import { LocalstorageService } from '../storage/localstorage.service';
 
-import { trigger, style, transition, animate, group } from '@angular/animations';
-import {CardComponent} from '../equipment/cards/card/card.component';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef, MatDialogConfig, MatSlideToggle, MatFormField, MatSnackBar, MatInput } from '@angular/material';
+import {
+  trigger,
+  style,
+  transition,
+  animate,
+  group
+} from '@angular/animations';
+import { CardComponent } from '../equipment/cards/card/card.component';
+import {
+  MAT_DIALOG_DATA,
+  MatDialog,
+  MatDialogRef,
+  MatDialogConfig,
+  MatSlideToggle,
+  MatFormField,
+  MatSnackBar,
+  MatInput
+} from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { CUBE } from '../equipment/cubes/cube.component';
 import { Cube } from '../equipment/cubes/cube';
@@ -43,24 +63,25 @@ export interface SettingsDialogData {
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
-  styleUrls: [ './game.component.scss'],
+  styleUrls: ['./game.component.scss'],
   animations: [
     trigger('itemAnim', [
       transition(':enter', [
-        style({transform: 'translateY(-100%)'}),
+        style({ transform: 'translateY(-100%)' }),
         animate(300)
       ]),
       transition(':leave', [
         group([
-          animate('0.2s 0.1s ease', style({
-            opacity: 0
-          }))
+          animate(
+            '0.2s 0.1s ease',
+            style({
+              opacity: 0
+            })
+          )
         ])
       ])
     ])
   ]
-
-
 })
 export class GameComponent implements OnInit {
   title = 'onsets';
@@ -115,23 +136,39 @@ export class GameComponent implements OnInit {
     this.set_V.clear();
 
     this.universe.forEach((c, i) => {
-        if (c.red) { this.set_R.add(i); }
-        if (c.blue) { this.set_B.add(i); }
-        if (c.yellow) { this.set_Y.add(i); }
-        if (c.green) { this.set_G.add(i); }
-        this.set_V.add(i);
+      if (c.red) {
+        this.set_R.add(i);
+      }
+      if (c.blue) {
+        this.set_B.add(i);
+      }
+      if (c.yellow) {
+        this.set_Y.add(i);
+      }
+      if (c.green) {
+        this.set_G.add(i);
+      }
+      this.set_V.add(i);
     });
     console.log('Blue', this.set_B.size);
     console.log('Red', this.set_R.size);
     console.log('Red u Blue', this.sets.union(this.set_R, this.set_B).size);
-    console.log('Red ∩ Blue', this.sets.intersection(this.set_R, this.set_B).size);
+    console.log(
+      'Red ∩ Blue',
+      this.sets.intersection(this.set_R, this.set_B).size
+    );
     console.log('Yellow', this.set_Y.size);
     console.log('Green', this.set_G.size);
     console.log('Green u Yellow', this.sets.union(this.set_G, this.set_Y).size);
-    console.log('Green ∩ Yellow', this.sets.intersection(this.set_G, this.set_Y).size);
+    console.log(
+      'Green ∩ Yellow',
+      this.sets.intersection(this.set_G, this.set_Y).size
+    );
 
     this.rollCubes();
-    if (this._universeSet) { this.cyclePlayers(); }
+    if (this._universeSet) {
+      this.cyclePlayers();
+    }
   }
 
   @ViewChildren(ColorcubeComponent) colorCubes: QueryList<any>;
@@ -140,12 +177,14 @@ export class GameComponent implements OnInit {
   @ViewChildren(NumbercubeComponent) numberCubes: QueryList<any>;
   @ViewChildren(CardComponent) cards: QueryList<any>;
 
-  constructor(private ref: ChangeDetectorRef,
-              public settingsDialog: MatDialog,
-              private snackBar: MatSnackBar,
-              private ps: PermutationsService,
-              private sets: SetsService,
-              private storage: LocalstorageService) {
+  constructor(
+    private ref: ChangeDetectorRef,
+    public settingsDialog: MatDialog,
+    private snackBar: MatSnackBar,
+    private ps: PermutationsService,
+    private sets: SetsService,
+    private storage: LocalstorageService
+  ) {
     this.all_resources = [
       new ColorcubeComponent(),
       new ColorcubeComponent(),
@@ -161,12 +200,13 @@ export class GameComponent implements OnInit {
       new OperationcubeComponent(),
       new OperationcubeComponent(),
       new OperationcubeComponent(),
-      new OperationcubeComponent(),
-
+      new OperationcubeComponent()
     ];
-    this.number_resources = [new NumbercubeComponent(),
+    this.number_resources = [
       new NumbercubeComponent(),
-      new NumbercubeComponent(), ];
+      new NumbercubeComponent(),
+      new NumbercubeComponent()
+    ];
     this.mix();
 
     this.goal_resources = [[], [], [], [], [], []];
@@ -192,12 +232,13 @@ export class GameComponent implements OnInit {
     this.reconstruct();
   }
 
-
-
   openSettings(): void {
     const dialogConfig = new MatDialogConfig();
-    dialogConfig.data = {settings: this.settings};
-    const dialogRef = this.settingsDialog.open(SettingsDialogComponent, dialogConfig);
+    dialogConfig.data = { settings: this.settings };
+    const dialogRef = this.settingsDialog.open(
+      SettingsDialogComponent,
+      dialogConfig
+    );
     dialogRef.afterClosed().subscribe(result => {
       console.log(result);
       this.settings = this.storage.saveSettings(result);
@@ -206,19 +247,22 @@ export class GameComponent implements OnInit {
     });
   }
 
-
   add_card() {
     this.universe.push(this.deck.cards.pop());
-    setTimeout(() => { this.cards.forEach( (c) => { c.flip(); }); }, 200);
+    setTimeout(() => {
+      this.cards.forEach(c => {
+        c.flip();
+      });
+    }, 200);
     if (this.settings.elementary) {
-      if (this.universe.length >= 6 ) {
+      if (this.universe.length >= 6) {
         this.canSetUniverse = true;
       }
-      if (this.universe.length >= 12 ) {
+      if (this.universe.length >= 12) {
         this.universeSet = true;
       }
     } else {
-      if (this.universe.length >= 10 ) {
+      if (this.universe.length >= 10) {
         this.canSetUniverse = true;
       }
       if (this.universe.length >= 14) {
@@ -243,12 +287,13 @@ export class GameComponent implements OnInit {
       new OperationcubeComponent(),
       new OperationcubeComponent(),
       new OperationcubeComponent(),
-      new OperationcubeComponent(),
-
+      new OperationcubeComponent()
     ];
-    this.number_resources = [new NumbercubeComponent(),
+    this.number_resources = [
       new NumbercubeComponent(),
-      new NumbercubeComponent(), ];
+      new NumbercubeComponent(),
+      new NumbercubeComponent()
+    ];
     this.mix();
 
     this.goal_resources = [[], [], [], [], [], []];
@@ -263,18 +308,17 @@ export class GameComponent implements OnInit {
     this.deck = new Deck();
     this.deck.shuffle();
 
-    if ( this.settings.auto_deal_minimum ) {
+    if (this.settings.auto_deal_minimum) {
       const minimum_cards = this.settings.elementary ? 6 : 10;
       // for (const i of this.arrayNums(minimum_cards))
       this.arrayNums(minimum_cards).forEach(() => {
         this.add_card();
       });
     }
-
   }
 
   arrayNums(n) {
-    return Array.from(Array(n), ( x, i ) => i );
+    return Array.from(Array(n), (x, i) => i);
   }
 
   rollCubes() {
@@ -290,21 +334,17 @@ export class GameComponent implements OnInit {
       let relation_cubes = 0;
       const relation_faces = [0, 0, 0];
       setTimeout(() => {
-        for ( const cube of this.all_resources ) {
-          if ( cube.constructor.name === 'RelationcubeComponent' ) {
-
+        for (const cube of this.all_resources) {
+          if (cube.constructor.name === 'RelationcubeComponent') {
             relation_faces[relation_cubes] = cube.cube.face;
             relation_cubes++;
-            if ( relation_cubes > 2 ) {
-              if ( relation_faces[0] === relation_faces[1] ) {
+            if (relation_cubes > 2) {
+              if (relation_faces[0] === relation_faces[1]) {
                 while (relation_faces[0] === cube.cube.face) {
                   cube.rand();
-
                 }
               }
             }
-
-
           }
         }
       }, 1400);
@@ -326,17 +366,22 @@ export class GameComponent implements OnInit {
       }
       }, 1200);
     }*/
-
   }
 
   drop(event: CdkDragDrop<string[]>) {
     if (event.previousContainer === event.container) {
-      moveItemInArray(event.container.data, event.previousIndex, event.currentIndex);
+      moveItemInArray(
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
     } else {
-      transferArrayItem(event.previousContainer.data,
-                        event.container.data,
-                        event.previousIndex,
-                        event.currentIndex);
+      transferArrayItem(
+        event.previousContainer.data,
+        event.container.data,
+        event.previousIndex,
+        event.currentIndex
+      );
       if (this.goalSet && this.universeSet) {
         this.cyclePlayers();
       }
@@ -345,24 +390,25 @@ export class GameComponent implements OnInit {
     // this.evaluate_solutions();
   }
 
-  evaluate_solutions() {
+  async evaluate_solutions() {
     // console.time('test');
 
     const valid_equations = [];
 
-    const resources = this.ps.hashCubes(this.permitted_resources.concat(this.required_resources));
+    const resources = this.ps.hashCubes(
+      this.permitted_resources.concat(this.required_resources)
+    );
     const required = this.ps.hashCubes(this.required_resources);
     console.log('Required: ', required);
     for (let i = 2; i <= resources.length; i++) {
-      for (const c of this.ps.combine(resources, i)) {
+      for (const c of await this.ps.combine(resources, i)) {
         if (this.ps.checkValidCombo(c, required)) {
-          for ( const permutation of this.ps.permute( c ) ) {
+          for (const permutation of await this.ps.permute(c)) {
             let s = '';
             for (const p of permutation) {
               s += ' ' + this.ps.hash_to_string(p);
             }
             valid_equations.push(s);
-
           }
         }
       }
@@ -387,10 +433,9 @@ export class GameComponent implements OnInit {
       this.all_resources[currentIndex] = this.all_resources[randomIndex];
       this.all_resources[randomIndex] = temporaryValue;
     }
-
   }
 
-  calculateValue(cubeArray: Array<any>, number = 0 ) {
+  calculateValue(cubeArray: Array<any>, number = 0) {
     if (cubeArray.length > 0) {
       const c = cubeArray[0].cube;
       if (c.invert) {
@@ -399,7 +444,7 @@ export class GameComponent implements OnInit {
         return parseInt(c.faces[c.face]['value'], 10);
       }
     } else {
-     return number;
+      return number;
     }
   }
 
@@ -411,22 +456,24 @@ export class GameComponent implements OnInit {
     const e = this.calculateValue(this.goal_resources[4], 0);
     const f = this.calculateValue(this.goal_resources[5], 0);
 
-    return (a * b * d) + ( c * ( e + f ) );
-
+    return a * b * d + c * (e + f);
   }
 
   setPlayerColors() {
-    const css1 = '.player1 .mat-progress-bar-fill::after {\n' +
+    const css1 =
+      '.player1 .mat-progress-bar-fill::after {\n' +
       '    background-color: ' +
       this.settings.player_colors[0] +
       ' !important;\n' +
       '}';
-    const css2 = '.player2 .mat-progress-bar-fill::after {\n' +
+    const css2 =
+      '.player2 .mat-progress-bar-fill::after {\n' +
       '    background-color: ' +
       this.settings.player_colors[1] +
       ' !important;\n' +
       '}';
-    const css3 = '.player3 .mat-progress-bar-fill::after {\n' +
+    const css3 =
+      '.player3 .mat-progress-bar-fill::after {\n' +
       '    background-color: ' +
       this.settings.player_colors[2] +
       ' !important;\n' +
@@ -448,7 +495,11 @@ export class GameComponent implements OnInit {
 
   *nextPlayer() {
     while (true) {
-      for (const n of this.arrayNums(this.settings.num_players)) { this.currentPlayer = `player${ n + 1 }`; this.currentPlayerName = this.settings.player_names[n]; yield n; }
+      for (const n of this.arrayNums(this.settings.num_players)) {
+        this.currentPlayer = `player${n + 1}`;
+        this.currentPlayerName = this.settings.player_names[n];
+        yield n;
+      }
     }
   }
 
@@ -458,86 +509,151 @@ export class GameComponent implements OnInit {
     this.playerIterator = this.nextPlayer();
     this.playerIterator.next();
   }
-
 }
 
 @Component({
   selector: 'app-settings-dialog',
   template: `
-    <ng-template #human><mat-icon>person</mat-icon></ng-template><ng-template #cpu><mat-icon>android</mat-icon></ng-template>
-  <h1 mat-dialog-title>Settings</h1>
+    <ng-template #human><mat-icon>person</mat-icon></ng-template
+    ><ng-template #cpu><mat-icon>android</mat-icon></ng-template>
+    <h1 mat-dialog-title>Settings</h1>
     <div mat-dialog-content>
       <div>
-        <mat-slide-toggle [(ngModel)]="data.settings.elementary" >Elementary Mode?</mat-slide-toggle>
-        </div><div>
-        <mat-slide-toggle [(ngModel)]="data.settings.fix_rolls" >Fix Illegal Rolls?</mat-slide-toggle>
-      </div><div>
-        <mat-slide-toggle [(ngModel)]="data.settings.auto_deal_minimum" >Auto-Deal Universe Minimum?</mat-slide-toggle>
-      </div><div>
-        <mat-slide-toggle [(ngModel)]="data.settings.show_goal" >Calculate and Show Goal?</mat-slide-toggle>
-      </div><div>
-        <mat-slide-toggle [(ngModel)]="data.settings.allow_reroll" >Allow re-rolls?</mat-slide-toggle>
-      </div><div>
-        <mat-slide-toggle [(ngModel)]="data.settings.dev_mode" >Development mode?</mat-slide-toggle>
-      </div><div>
+        <mat-slide-toggle [(ngModel)]="data.settings.elementary"
+          >Elementary Mode?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.fix_rolls"
+          >Fix Illegal Rolls?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.auto_deal_minimum"
+          >Auto-Deal Universe Minimum?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.show_goal"
+          >Calculate and Show Goal?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.allow_reroll"
+          >Allow re-rolls?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.dev_mode"
+          >Development mode?</mat-slide-toggle
+        >
+      </div>
+      <div>
         <mat-form-field>
-          <input matInput type="number" placeholder="Number of Players?" [(ngModel)]="data.settings.num_players" min="2" max="3" />
+          <input
+            matInput
+            type="number"
+            placeholder="Number of Players?"
+            [(ngModel)]="data.settings.num_players"
+            min="2"
+            max="3"
+          />
         </mat-form-field>
-    </div><div>
+      </div>
+      <div>
         <mat-form-field>
-          <input matInput type="text" placeholder="Player 1 Name" [(ngModel)]="data.settings.player_names[0]">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput type="color" placeholder="Player 1 Color" [(ngModel)]="data.settings.player_colors[0]">
-        </mat-form-field>
-
-          <mat-slide-toggle [(ngModel)]="data.settings.player_human[0]" placeholder="Controlled by?">
-            <span *ngIf="data.settings.player_human[0]; then human else cpu"></span>
-
-          </mat-slide-toggle>
-
-    </div><div>
-        <mat-form-field>
-          <input matInput type="text" placeholder="Player 2 Name" [(ngModel)]="data.settings.player_names[1]">
-        </mat-form-field>
-        <mat-form-field>
-          <input matInput type="color" placeholder="Player 2 Color" [(ngModel)]="data.settings.player_colors[1]">
-        </mat-form-field>
-
-          <mat-slide-toggle [(ngModel)]="data.settings.player_human[1]" placeholder="Controlled by?">
-            <span *ngIf="data.settings.player_human[1]; then human else cpu"></span>
-
-          </mat-slide-toggle>
-
-    </div><div *ngIf="data.settings.num_players > 2">
-        <mat-form-field>
-          <input matInput type="text" placeholder="Player 3 Name" [(ngModel)]="data.settings.player_names[2]">
+          <input
+            matInput
+            type="text"
+            placeholder="Player 1 Name"
+            [(ngModel)]="data.settings.player_names[0]"
+          />
         </mat-form-field>
         <mat-form-field>
-          <input matInput type="color" placeholder="Player 3 Color" [(ngModel)]="data.settings.player_colors[2]">
+          <input
+            matInput
+            type="color"
+            placeholder="Player 1 Color"
+            [(ngModel)]="data.settings.player_colors[0]"
+          />
         </mat-form-field>
 
-          <mat-slide-toggle [(ngModel)]="data.settings.player_human[2]" placeholder="Controlled by?">
-            <span *ngIf="data.settings.player_human[2]; then human else cpu"></span>
+        <mat-slide-toggle
+          [(ngModel)]="data.settings.player_human[0]"
+          placeholder="Controlled by?"
+        >
+          <span
+            *ngIf="data.settings.player_human[0]; then human; else cpu"
+          ></span>
+        </mat-slide-toggle>
+      </div>
+      <div>
+        <mat-form-field>
+          <input
+            matInput
+            type="text"
+            placeholder="Player 2 Name"
+            [(ngModel)]="data.settings.player_names[1]"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="color"
+            placeholder="Player 2 Color"
+            [(ngModel)]="data.settings.player_colors[1]"
+          />
+        </mat-form-field>
 
-          </mat-slide-toggle>
+        <mat-slide-toggle
+          [(ngModel)]="data.settings.player_human[1]"
+          placeholder="Controlled by?"
+        >
+          <span
+            *ngIf="data.settings.player_human[1]; then human; else cpu"
+          ></span>
+        </mat-slide-toggle>
+      </div>
+      <div *ngIf="data.settings.num_players > 2">
+        <mat-form-field>
+          <input
+            matInput
+            type="text"
+            placeholder="Player 3 Name"
+            [(ngModel)]="data.settings.player_names[2]"
+          />
+        </mat-form-field>
+        <mat-form-field>
+          <input
+            matInput
+            type="color"
+            placeholder="Player 3 Color"
+            [(ngModel)]="data.settings.player_colors[2]"
+          />
+        </mat-form-field>
 
-    </div>
+        <mat-slide-toggle
+          [(ngModel)]="data.settings.player_human[2]"
+          placeholder="Controlled by?"
+        >
+          <span
+            *ngIf="data.settings.player_human[2]; then human; else cpu"
+          ></span>
+        </mat-slide-toggle>
+      </div>
     </div>
     <div mat-dialog-actions>
       <button mat-button (click)="onNoClick()">OK</button>
     </div>
-  `,
+  `
 })
 export class SettingsDialogComponent {
   constructor(
     public dialogRef: MatDialogRef<SettingsDialogComponent>,
-    @Inject(MAT_DIALOG_DATA) public data: SettingsDialogData) {}
+    @Inject(MAT_DIALOG_DATA) public data: SettingsDialogData
+  ) {}
 
-    onNoClick(): void {
-      this.dialogRef.close(this.data.settings);
-    }
-
+  onNoClick(): void {
+    this.dialogRef.close(this.data.settings);
+  }
 }
-
-
