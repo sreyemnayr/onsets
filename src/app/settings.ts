@@ -19,9 +19,9 @@ export class Settings {
     dev_mode = false,
     num_players = 2,
     use_timer = true,
-    player_names = ['Player 1', 'Player 2', 'Player 3'],
-    player_colors = ['#47F5BC', '#FF874A', '#F848BF'],
-    player_human = [true, true, true]
+    player_names = ['Player 1', 'OnSetsBot', 'Player 3'],
+    player_colors = ['#47f5bc', '#ff874a', '#f848bf'],
+    player_human = [true, false, true]
   ) {
     this.elementary = elementary;
     this.fix_rolls = fix_rolls;

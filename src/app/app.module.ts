@@ -1,4 +1,3 @@
-
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
@@ -14,13 +13,13 @@ import {
   MatInputModule,
   MatDialogModule,
   MatSnackBarModule,
-  MAT_SNACK_BAR_DEFAULT_OPTIONS, MatProgressBarModule,
+  MAT_SNACK_BAR_DEFAULT_OPTIONS,
+  MatProgressBarModule
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
-import {DragDropModule} from '@angular/cdk/drag-drop';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 
 import { StorageServiceModule } from 'ngx-webstorage-service';
-
 
 import { NumbercubeComponent } from './equipment/cubes/numbercube/numbercube.component';
 import { OperationcubeComponent } from './equipment/cubes/operationcube/operationcube.component';
@@ -28,13 +27,18 @@ import { RelationcubeComponent } from './equipment/cubes/relationcube/relationcu
 import { ColorcubeComponent } from './equipment/cubes/colorcube/colorcube.component';
 
 import { DynamicModule } from 'ng-dynamic-component';
-import { GameComponent, SettingsDialogComponent } from './game/game.component';
+import {
+  ChallengeDialogComponent,
+  GameComponent,
+  SettingsDialogComponent
+} from './game/game.component';
 import { TimerComponent } from './timer/timer.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     SettingsDialogComponent,
+    ChallengeDialogComponent,
     GameComponent,
     TimerComponent
   ],
@@ -50,20 +54,34 @@ import { TimerComponent } from './timer/timer.component';
     MatDialogModule,
     MatSnackBarModule,
     DragDropModule,
-    DynamicModule.withComponents([NumbercubeComponent, OperationcubeComponent, RelationcubeComponent, ColorcubeComponent]),
+    DynamicModule.withComponents([
+      NumbercubeComponent,
+      OperationcubeComponent,
+      RelationcubeComponent,
+      ColorcubeComponent
+    ]),
     StorageServiceModule,
     MatInputModule,
-    MatProgressBarModule,
+    MatProgressBarModule
   ],
   exports: [
     MatButtonModule,
     MatFormFieldModule,
     MatSlideToggleModule,
     MatInputModule,
-    MatProgressBarModule,
+    MatProgressBarModule
   ],
-  providers: [{provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: {duration: 2500}}],
+  providers: [
+    { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } }
+  ],
   bootstrap: [AppComponent],
-  entryComponents: [SettingsDialogComponent, NumbercubeComponent, OperationcubeComponent, RelationcubeComponent, ColorcubeComponent]
+  entryComponents: [
+    SettingsDialogComponent,
+    ChallengeDialogComponent,
+    NumbercubeComponent,
+    OperationcubeComponent,
+    RelationcubeComponent,
+    ColorcubeComponent
+  ]
 })
-export class AppModule { }
+export class AppModule {}

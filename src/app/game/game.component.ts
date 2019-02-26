@@ -60,6 +60,10 @@ export interface SettingsDialogData {
   settings: Settings;
 }
 
+export interface ChallengeDialogData {
+  challenge: string;
+}
+
 @Component({
   selector: 'app-game',
   templateUrl: './game.component.html',
@@ -207,6 +211,7 @@ export class GameComponent implements OnInit {
   constructor(
     private ref: ChangeDetectorRef,
     public settingsDialog: MatDialog,
+    public challengeDialog: MatDialog,
     private snackBar: MatSnackBar,
     private ps: PermutationsService,
     private sets: SetsService,
@@ -280,6 +285,20 @@ export class GameComponent implements OnInit {
     });
   }
 
+  openChallenge(challenge: string): void {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.data = { challenge: challenge };
+    const dialogRef = this.challengeDialog.open(
+      ChallengeDialogComponent,
+      dialogConfig
+    );
+    dialogRef.afterClosed().subscribe(result => {
+      this.reconstruct();
+      this.cyclePlayers();
+      this.rollCubes();
+    });
+  }
+
   add_card() {
     this.universe.push(this.deck.cards.pop());
     setTimeout(() => {
@@ -328,7 +347,8 @@ export class GameComponent implements OnInit {
       new NumbercubeComponent()
     ];
     this.mix();
-
+    this.goal = 0;
+    this.goal_resources.length = 0;
     this.goal_resources = [[], [], [], [], [], []];
     this.forbidden_resources = [];
     this.permitted_resources = [];
@@ -421,9 +441,15 @@ export class GameComponent implements OnInit {
     }
     this.goal = this.calculateGoal();
     // this.evaluate_solutions();
+    // this.check_for_challenge();
   }
 
   checkPermutationValue(permutation: Array<any>): Set<any> {
+    if (permutation.length === 2) {
+      if (permutation[1] === FACES.COMPLEMENT) {
+        return this.sets.difference(this.set_V, this.card_sets[permutation[0]]);
+      }
+    }
     if (permutation.length === 3) {
       if (permutation[1] === FACES.UNION) {
         return this.sets.union(
@@ -483,16 +509,56 @@ export class GameComponent implements OnInit {
     return new Set(this.arrayNums(17));
   }
 
-  async evaluate_solutions() {
+  check_for_challenge() {
+    const resources = this.permitted_resources.concat(this.required_resources);
+    const required = this.required_resources;
+    //console.log(resources);
+
+    this.all_resources.some((r, i) => {
+      console.log(r);
+      let challenge_r = false;
+      const challenge = this.evaluate_solutions(
+        resources.concat([r]),
+        required,
+        true
+      ).then(c => {
+        //console.log(c);
+        if (c) {
+          this.openChallenge(c);
+          challenge_r = true;
+        } else {
+          challenge_r = false;
+        }
+      });
+      console.log('Challenge', challenge_r);
+      return challenge_r;
+    });
+    return false;
+  }
+
+  async evaluate_solutions(
+    available_resources: any = false,
+    required_resources: any = false,
+    return_challenge = true
+  ) {
     // console.time('test');
 
     const valid_equations = [];
+    if (!available_resources) {
+      available_resources = this.permitted_resources.concat(
+        this.required_resources
+      );
+    }
+    if (!required_resources) {
+      required_resources = this.required_resources;
+    }
 
-    const resources = this.ps.hashCubes(
-      this.permitted_resources.concat(this.required_resources)
-    );
-    const required = this.ps.hashCubes(this.required_resources);
-    console.log('Required: ', required);
+    const resources = this.ps.hashCubes(available_resources);
+    const required = this.ps.hashCubes(required_resources);
+
+    // console.log('Resources: ', resources);
+    // console.log('Required: ', required);
+    // console.log('Required: ', required);
     for (let i = 2; i <= resources.length; i++) {
       for (const c of await this.ps.combine(resources, i)) {
         if (this.ps.checkValidCombo(c, required)) {
@@ -502,6 +568,9 @@ export class GameComponent implements OnInit {
               for (const p of permutation) {
                 s += ' ' + this.ps.hash_to_string(p);
               }
+              if (return_challenge) {
+                return s;
+              }
               valid_equations.push(s);
             }
           }
@@ -510,8 +579,9 @@ export class GameComponent implements OnInit {
       // console.log(combos);
     }
     // console.timeEnd('test');
-    console.log(valid_equations);
+    // console.log(valid_equations);
     valid_equations.length = 0;
+    return false;
   }
 
   mix() {
@@ -585,7 +655,37 @@ export class GameComponent implements OnInit {
   }
 
   cyclePlayers() {
-    const _ = this.playerIterator.next();
+    const player = this.playerIterator.next();
+    if (!this.settings.player_human[player.value]) {
+      console.log('CPU');
+      const challenge_check = this.check_for_challenge();
+      if (!challenge_check) {
+        if (!this.universeSet) {
+          setTimeout(() => {
+            this.add_card();
+
+            setTimeout(() => {
+              this.add_card();
+              this.universeSet = true;
+            }, 1000);
+          }, 1000);
+        } else if (this.universeSet && !this.goalSet) {
+          setTimeout(() => {
+            // this.goal_resources[3].push(this.number_resources.pop());
+            this.goal_resources[4].push(this.number_resources.pop());
+            this.goal = this.calculateGoal();
+            this.goalSet = true;
+            this.cyclePlayers();
+            this.snackBar.open('Goal Set!');
+          }, 3000);
+        } else {
+          setTimeout(() => {
+            this.forbidden_resources.push(this.all_resources.pop());
+            this.cyclePlayers();
+          }, 1200);
+        }
+      }
+    }
     // this.timer.startTimer();
   }
 
@@ -756,5 +856,26 @@ export class SettingsDialogComponent {
 
   onNoClick(): void {
     this.dialogRef.close(this.data.settings);
+  }
+}
+
+@Component({
+  selector: 'app-challenge-dialog',
+  template: `
+    <h1 mat-dialog-title>Challenge Now!</h1>
+    {{ data.challenge }}
+    <div mat-dialog-actions>
+      <button mat-button (click)="onNoClick()">OK</button>
+    </div>
+  `
+})
+export class ChallengeDialogComponent {
+  constructor(
+    public dialogRef: MatDialogRef<ChallengeDialogComponent>,
+    @Inject(MAT_DIALOG_DATA) public data: ChallengeDialogData
+  ) {}
+
+  onNoClick(): void {
+    this.dialogRef.close(this.data.challenge);
   }
 }
