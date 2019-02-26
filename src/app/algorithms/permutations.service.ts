@@ -192,6 +192,12 @@ export class PermutationsService {
         return true;
       }
     }
+    if (
+      PermutationsService.checkType(permutation[permutation.length - 1]) ===
+      OPERATOR
+    ) {
+      return false;
+    }
     if (permutation.length > 1) {
       for (let i = 1; i < permutation.length; i++) {
         if (PermutationsService.checkType(permutation[i]) === MODIFIER) {

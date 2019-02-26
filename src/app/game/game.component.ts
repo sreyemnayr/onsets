@@ -51,7 +51,7 @@ import {
 import { FormControl } from '@angular/forms';
 import { CUBE } from '../equipment/cubes/cube.component';
 import { Cube } from '../equipment/cubes/cube';
-import { PermutationsService } from '../algorithms/permutations.service';
+import { FACES, PermutationsService } from '../algorithms/permutations.service';
 import { SetsService } from '../algorithms/sets.service';
 
 import { TimerComponent } from '../timer/timer.component';
@@ -93,6 +93,12 @@ export class GameComponent implements OnInit {
   set_G: Set<number>;
   set_Y: Set<number>;
   set_V: Set<number>;
+  not_R: Set<number>;
+  not_B: Set<number>;
+  not_G: Set<number>;
+  not_Y: Set<number>;
+  not_V: Set<number>;
+  card_sets: Array<Set<number>>;
 
   numCards: any;
   showSettings: boolean;
@@ -134,22 +140,43 @@ export class GameComponent implements OnInit {
     this.set_G.clear();
     this.set_Y.clear();
     this.set_V.clear();
+    this.not_R.clear();
+    this.not_B.clear();
+    this.not_G.clear();
+    this.not_Y.clear();
+    this.not_V.clear();
+    this.card_sets.length = 0;
 
     this.universe.forEach((c, i) => {
       if (c.red) {
         this.set_R.add(i);
+      } else {
+        this.not_R.add(i);
       }
       if (c.blue) {
         this.set_B.add(i);
+      } else {
+        this.not_B.add(i);
       }
       if (c.yellow) {
         this.set_Y.add(i);
+      } else {
+        this.not_Y.add(i);
       }
       if (c.green) {
         this.set_G.add(i);
+      } else {
+        this.not_G.add(i);
       }
       this.set_V.add(i);
     });
+    this.card_sets[FACES.R] = this.set_R;
+    this.card_sets[FACES.B] = this.set_B;
+    this.card_sets[FACES.Y] = this.set_Y;
+    this.card_sets[FACES.G] = this.set_G;
+    this.card_sets[FACES.UNIVERSE] = this.set_V;
+    this.card_sets[FACES.EMPTY] = this.not_V;
+
     console.log('Blue', this.set_B.size);
     console.log('Red', this.set_R.size);
     console.log('Red u Blue', this.sets.union(this.set_R, this.set_B).size);
@@ -225,6 +252,12 @@ export class GameComponent implements OnInit {
     this.set_Y = new Set();
     this.set_G = new Set();
     this.set_V = new Set();
+    this.not_R = new Set();
+    this.not_B = new Set();
+    this.not_Y = new Set();
+    this.not_G = new Set();
+    this.not_V = new Set();
+    this.card_sets = [];
     this.universeSet = false;
     this.displayCards = 6;
     this.showSettings = true;
@@ -390,6 +423,66 @@ export class GameComponent implements OnInit {
     // this.evaluate_solutions();
   }
 
+  checkPermutationValue(permutation: Array<any>): Set<any> {
+    if (permutation.length === 3) {
+      if (permutation[1] === FACES.UNION) {
+        return this.sets.union(
+          this.card_sets[permutation[0]],
+          this.card_sets[permutation[2]]
+        );
+      }
+      if (permutation[1] === FACES.INTERSECT) {
+        return this.sets.intersection(
+          this.card_sets[permutation[0]],
+          this.card_sets[permutation[2]]
+        );
+      }
+    }
+    if (permutation.length === 4) {
+      if (permutation[1] === FACES.COMPLEMENT) {
+        if (permutation[2] === FACES.UNION) {
+          return this.sets.union(
+            this.sets.difference(this.set_V, this.card_sets[permutation[0]]),
+            this.card_sets[permutation[3]]
+          );
+        }
+        if (permutation[2] === FACES.INTERSECT) {
+          return this.sets.intersection(
+            this.sets.difference(this.set_V, this.card_sets[permutation[0]]),
+            this.card_sets[permutation[3]]
+          );
+        }
+        if (permutation[2] === FACES.DIFFERENCE) {
+          return this.sets.difference(
+            this.sets.difference(this.set_V, this.card_sets[permutation[0]]),
+            this.card_sets[permutation[3]]
+          );
+        }
+      }
+      if (permutation[3] === FACES.COMPLEMENT) {
+        if (permutation[1] === FACES.UNION) {
+          return this.sets.union(
+            this.card_sets[permutation[0]],
+            this.sets.difference(this.set_V, this.card_sets[permutation[2]])
+          );
+        }
+        if (permutation[1] === FACES.INTERSECT) {
+          return this.sets.intersection(
+            this.card_sets[permutation[0]],
+            this.sets.difference(this.set_V, this.card_sets[permutation[2]])
+          );
+        }
+        if (permutation[1] === FACES.DIFFERENCE) {
+          return this.sets.difference(
+            this.card_sets[permutation[0]],
+            this.sets.difference(this.set_V, this.card_sets[permutation[2]])
+          );
+        }
+      }
+    }
+    return new Set(this.arrayNums(17));
+  }
+
   async evaluate_solutions() {
     // console.time('test');
 
@@ -404,11 +497,13 @@ export class GameComponent implements OnInit {
       for (const c of await this.ps.combine(resources, i)) {
         if (this.ps.checkValidCombo(c, required)) {
           for (const permutation of await this.ps.permute(c)) {
-            let s = '';
-            for (const p of permutation) {
-              s += ' ' + this.ps.hash_to_string(p);
+            if (this.checkPermutationValue(permutation).size === this.goal) {
+              let s = '';
+              for (const p of permutation) {
+                s += ' ' + this.ps.hash_to_string(p);
+              }
+              valid_equations.push(s);
             }
-            valid_equations.push(s);
           }
         }
       }
@@ -416,6 +511,7 @@ export class GameComponent implements OnInit {
     }
     // console.timeEnd('test');
     console.log(valid_equations);
+    valid_equations.length = 0;
   }
 
   mix() {
@@ -541,6 +637,11 @@ export class GameComponent implements OnInit {
       <div>
         <mat-slide-toggle [(ngModel)]="data.settings.allow_reroll"
           >Allow re-rolls?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.use_timer"
+          >Use game timer?</mat-slide-toggle
         >
       </div>
       <div>

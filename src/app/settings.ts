@@ -5,21 +5,24 @@ export class Settings {
   show_goal: boolean;
   allow_reroll: boolean;
   dev_mode: boolean;
+  use_timer: boolean;
   num_players: number;
   player_names: Array<string>;
   player_colors: Array<string>;
   player_human: Array<boolean>;
-  constructor(elementary= true,
-              fix_rolls= true,
-              auto_deal_minimum= true,
-              show_goal= false,
-              allow_reroll= false,
-              dev_mode= false,
-              num_players= 2,
-              player_names= ['Player 1', 'Player 2', 'Player 3'],
-              player_colors= ['#47F5BC', '#FF874A', '#F848BF'],
-              player_human= [true, true, true]
-              ) {
+  constructor(
+    elementary = true,
+    fix_rolls = true,
+    auto_deal_minimum = true,
+    show_goal = false,
+    allow_reroll = false,
+    dev_mode = false,
+    num_players = 2,
+    use_timer = true,
+    player_names = ['Player 1', 'Player 2', 'Player 3'],
+    player_colors = ['#47F5BC', '#FF874A', '#F848BF'],
+    player_human = [true, true, true]
+  ) {
     this.elementary = elementary;
     this.fix_rolls = fix_rolls;
     this.auto_deal_minimum = auto_deal_minimum;
@@ -30,5 +33,6 @@ export class Settings {
     this.player_names = player_names;
     this.player_colors = player_colors;
     this.player_human = player_human;
+    this.use_timer = use_timer;
   }
 }
