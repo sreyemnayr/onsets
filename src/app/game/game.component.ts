@@ -680,7 +680,17 @@ export class GameComponent implements OnInit {
           }, 3000);
         } else {
           setTimeout(() => {
-            this.forbidden_resources.push(this.all_resources.pop());
+            switch (Math.floor(Math.random() * 6)) {
+              case 0:
+                this.forbidden_resources.push(this.all_resources.pop());
+                break;
+              case 1:
+                this.required_resources.push(this.all_resources.pop());
+                break;
+              default:
+                this.permitted_resources.push(this.all_resources.pop());
+            }
+
             this.cyclePlayers();
           }, 1200);
         }
