@@ -125,6 +125,7 @@ export class GameComponent implements OnInit {
 
   currentPlayer = 'player1';
   currentPlayerName = 'Player 1';
+  currentPlayerInt = 0;
 
   playerStyles;
   playerIterator;
@@ -512,25 +513,28 @@ export class GameComponent implements OnInit {
   check_for_challenge() {
     const resources = this.permitted_resources.concat(this.required_resources);
     const required = this.required_resources;
-    //console.log(resources);
 
     this.all_resources.some((r, i) => {
       console.log(r);
       let challenge_r = false;
+      let challenge_str = '';
       const challenge = this.evaluate_solutions(
         resources.concat([r]),
         required,
         true
       ).then(c => {
-        //console.log(c);
         if (c) {
-          this.openChallenge(c);
+          challenge_str = c;
+
           challenge_r = true;
         } else {
           challenge_r = false;
         }
       });
-      console.log('Challenge', challenge_r);
+      if (challenge_r) {
+        this.openChallenge(challenge_str);
+      }
+      console.log('Challenge', challenge);
       return challenge_r;
     });
     return false;
@@ -626,31 +630,26 @@ export class GameComponent implements OnInit {
   }
 
   setPlayerColors() {
-    const css1 =
-      '.player1 .mat-progress-bar-fill::after {\n' +
-      '    background-color: ' +
-      this.settings.player_colors[0] +
-      ' !important;\n' +
-      '}';
-    const css2 =
-      '.player2 .mat-progress-bar-fill::after {\n' +
-      '    background-color: ' +
-      this.settings.player_colors[1] +
-      ' !important;\n' +
-      '}';
-    const css3 =
-      '.player3 .mat-progress-bar-fill::after {\n' +
-      '    background-color: ' +
-      this.settings.player_colors[2] +
-      ' !important;\n' +
-      '}';
+    const css = `
+    .player1 .mat-progress-bar-fill::after { background-color: ${
+      this.settings.player_colors[0]
+    } !important; }
+    .player2 .mat-progress-bar-fill::after { background-color: ${
+      this.settings.player_colors[1]
+    } !important; }
+    .player3 .mat-progress-bar-fill::after { background-color: ${
+      this.settings.player_colors[2]
+    } !important; }
+    .player1  { color: ${this.settings.player_colors[0]} !important; }
+    .player2  { color: ${this.settings.player_colors[1]} !important; }
+    .player3  { color: ${this.settings.player_colors[2]} !important; }
+    `;
     const head = document.getElementsByTagName('head')[0];
     // const styletag = document.createElement('style');
     this.playerStyles.innerHTML = '';
     this.playerStyles.type = 'text/css';
-    this.playerStyles.appendChild(document.createTextNode(css1));
-    this.playerStyles.appendChild(document.createTextNode(css2));
-    this.playerStyles.appendChild(document.createTextNode(css3));
+    this.playerStyles.appendChild(document.createTextNode(css));
+
     head.appendChild(this.playerStyles);
   }
 
@@ -704,6 +703,7 @@ export class GameComponent implements OnInit {
       for (const n of this.arrayNums(this.settings.num_players)) {
         this.currentPlayer = `player${n + 1}`;
         this.currentPlayerName = this.settings.player_names[n];
+        this.currentPlayerInt = n;
         yield n;
       }
     }

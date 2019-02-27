@@ -116,7 +116,7 @@ export class PermutationsService {
 
   checkValidCombo(combo, required = []) {
     const r = Array.from(Object.create(required));
-    if (combo.length === 1) {
+    if (combo.length === 1 || combo.length > 9) {
       return false;
     }
     const count = [0, 0, 0];

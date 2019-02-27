@@ -13,6 +13,8 @@ export class TimerComponent implements OnInit {
 
   @Input() playerName: string = 'Player 1';
 
+  @Input() playerIcon: string = 'person';
+
   @Input()
   set playerClass(playerClass: string) {
     this._playerClass = playerClass;
@@ -40,10 +42,12 @@ export class TimerComponent implements OnInit {
     const time = this.seconds;
     this.curSec = 0;
     const timer$ = interval(1000);
-    if(this.sub) { this.sub.unsubscribe(); }
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
 
-    this.sub = timer$.subscribe((sec) => {
-      this.progressbarValue = 100 - sec * 100 / this.seconds;
+    this.sub = timer$.subscribe(sec => {
+      this.progressbarValue = 100 - (sec * 100) / this.seconds;
       this.curSec = sec;
 
       if (this.curSec === this.seconds) {
@@ -52,10 +56,9 @@ export class TimerComponent implements OnInit {
     });
   }
 
-  constructor() { }
+  constructor() {}
 
   ngOnInit() {
     this.startTimer();
   }
-
 }

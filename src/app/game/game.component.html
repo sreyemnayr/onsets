@@ -9,7 +9,7 @@
 </div>
 <button (click)="showSettings = !showSettings">{{ showSettings ? 'Hide' : 'Show' }} Settings</button>-->
 <div class="container">
-    <app-timer #timer [playerClass]="currentPlayer" [playerName]="currentPlayerName" ></app-timer>
+    <app-timer #timer [playerClass]="currentPlayer" [playerName]="currentPlayerName" [playerIcon]="settings.player_human[currentPlayerInt] ? 'person' : 'android'"></app-timer>
 </div>
 <div class="container">
 <div class="d-flex flex-column flex-lg-row ">
