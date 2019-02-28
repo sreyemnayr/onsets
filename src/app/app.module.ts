@@ -14,7 +14,9 @@ import {
   MatDialogModule,
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
-  MatProgressBarModule
+  MatProgressBarModule,
+  MatChipsModule,
+  MatBadgeModule
 } from '@angular/material';
 import { FormsModule } from '@angular/forms';
 import { DragDropModule } from '@angular/cdk/drag-drop';
@@ -47,6 +49,8 @@ import { TimerComponent } from './timer/timer.component';
     EquipmentModule,
     BrowserAnimationsModule,
     MatButtonModule,
+    MatChipsModule,
+    MatBadgeModule,
     MatIconModule,
     MatSlideToggleModule,
     MatFormFieldModule,
@@ -69,7 +73,9 @@ import { TimerComponent } from './timer/timer.component';
     MatFormFieldModule,
     MatSlideToggleModule,
     MatInputModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatChipsModule,
+    MatBadgeModule
   ],
   providers: [
     { provide: MAT_SNACK_BAR_DEFAULT_OPTIONS, useValue: { duration: 2500 } }

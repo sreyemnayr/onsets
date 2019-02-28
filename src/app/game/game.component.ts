@@ -15,9 +15,12 @@ import {
 
 import {
   CdkDragDrop,
+  copyArrayItem,
   moveItemInArray,
   transferArrayItem
 } from '@angular/cdk/drag-drop';
+
+import invert from 'invert-color';
 
 import { Deck } from '../equipment/cards/deck';
 
@@ -110,6 +113,7 @@ export class GameComponent implements OnInit {
   goalSet: boolean;
 
   timer: TimerComponent;
+  turnSeconds = 60;
 
   stage: number;
   settings: Settings;
@@ -120,6 +124,7 @@ export class GameComponent implements OnInit {
   forbidden_resources: Array<any>;
   permitted_resources: Array<any>;
   required_resources: Array<any>;
+  solution_resources: Array<any>;
 
   canSetUniverse = false;
 
@@ -129,6 +134,10 @@ export class GameComponent implements OnInit {
 
   playerStyles;
   playerIterator;
+
+  inChallenge = false;
+  inBonus = false;
+  wasInBonus = false;
 
   goal: number;
 
@@ -182,20 +191,25 @@ export class GameComponent implements OnInit {
     this.card_sets[FACES.UNIVERSE] = this.set_V;
     this.card_sets[FACES.EMPTY] = this.not_V;
 
-    console.log('Blue', this.set_B.size);
-    console.log('Red', this.set_R.size);
-    console.log('Red u Blue', this.sets.union(this.set_R, this.set_B).size);
-    console.log(
-      'Red ∩ Blue',
-      this.sets.intersection(this.set_R, this.set_B).size
-    );
-    console.log('Yellow', this.set_Y.size);
-    console.log('Green', this.set_G.size);
-    console.log('Green u Yellow', this.sets.union(this.set_G, this.set_Y).size);
-    console.log(
-      'Green ∩ Yellow',
-      this.sets.intersection(this.set_G, this.set_Y).size
-    );
+    if (this.settings.dev_mode) {
+      console.log('Blue', this.set_B.size);
+      console.log('Red', this.set_R.size);
+      console.log('Red u Blue', this.sets.union(this.set_R, this.set_B).size);
+      console.log(
+        'Red ∩ Blue',
+        this.sets.intersection(this.set_R, this.set_B).size
+      );
+      console.log('Yellow', this.set_Y.size);
+      console.log('Green', this.set_G.size);
+      console.log(
+        'Green u Yellow',
+        this.sets.union(this.set_G, this.set_Y).size
+      );
+      console.log(
+        'Green ∩ Yellow',
+        this.sets.intersection(this.set_G, this.set_Y).size
+      );
+    }
 
     this.rollCubes();
     if (this._universeSet) {
@@ -246,6 +260,7 @@ export class GameComponent implements OnInit {
     this.forbidden_resources = [];
     this.permitted_resources = [];
     this.required_resources = [];
+    this.solution_resources = [];
 
     this.settings = storage.getSettings();
 
@@ -268,6 +283,10 @@ export class GameComponent implements OnInit {
     this.displayCards = 6;
     this.showSettings = true;
     this.showDice = true;
+    this.inChallenge = false;
+    this.inBonus = false;
+    this.wasInBonus = false;
+    this.turnSeconds = 60;
     this.reconstruct();
   }
 
@@ -279,7 +298,6 @@ export class GameComponent implements OnInit {
       dialogConfig
     );
     dialogRef.afterClosed().subscribe(result => {
-      console.log(result);
       this.settings = this.storage.saveSettings(result);
       this.setPlayerColors();
       this.playerIterator = this.nextPlayer();
@@ -354,6 +372,7 @@ export class GameComponent implements OnInit {
     this.forbidden_resources = [];
     this.permitted_resources = [];
     this.required_resources = [];
+    this.solution_resources = [];
     this.stage = 0;
     this.universeSet = false;
     this.canSetUniverse = false;
@@ -361,6 +380,10 @@ export class GameComponent implements OnInit {
     this.universe = [];
     this.deck = new Deck();
     this.deck.shuffle();
+    this.inChallenge = false;
+    this.inBonus = false;
+    this.wasInBonus = false;
+    this.turnSeconds = 60;
 
     if (this.settings.auto_deal_minimum) {
       const minimum_cards = this.settings.elementary ? 6 : 10;
@@ -430,14 +453,24 @@ export class GameComponent implements OnInit {
         event.currentIndex
       );
     } else {
-      transferArrayItem(
-        event.previousContainer.data,
-        event.container.data,
-        event.previousIndex,
-        event.currentIndex
-      );
-      if (this.goalSet && this.universeSet) {
-        this.cyclePlayers();
+      console.log(event.container.id);
+      if (event.container.id === 'solutionList') {
+        copyArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+      } else {
+        transferArrayItem(
+          event.previousContainer.data,
+          event.container.data,
+          event.previousIndex,
+          event.currentIndex
+        );
+        if (this.goalSet && this.universeSet) {
+          this.cyclePlayers();
+        }
       }
     }
     this.goal = this.calculateGoal();
@@ -513,30 +546,30 @@ export class GameComponent implements OnInit {
   check_for_challenge() {
     const resources = this.permitted_resources.concat(this.required_resources);
     const required = this.required_resources;
+    let challenge_str = '';
+    let cont = true;
 
-    this.all_resources.some((r, i) => {
-      console.log(r);
-      let challenge_r = false;
-      let challenge_str = '';
-      const challenge = this.evaluate_solutions(
-        resources.concat([r]),
-        required,
-        true
-      ).then(c => {
-        if (c) {
-          challenge_str = c;
-
-          challenge_r = true;
-        } else {
-          challenge_r = false;
+    this.all_resources.forEach(async (r, i) => {
+      if (cont === true) {
+        const challenge = await this.evaluate_solutions(
+          resources.concat([r]),
+          required,
+          true
+        );
+        if (cont) {
+          if (challenge) {
+            challenge_str = challenge;
+            cont = false;
+            this.inChallenge = true;
+            this.openChallenge(challenge_str);
+          }
         }
-      });
-      if (challenge_r) {
-        this.openChallenge(challenge_str);
       }
-      console.log('Challenge', challenge);
-      return challenge_r;
     });
+    console.log(cont);
+    if (!cont) {
+      return true;
+    }
     return false;
   }
 
@@ -560,9 +593,6 @@ export class GameComponent implements OnInit {
     const resources = this.ps.hashCubes(available_resources);
     const required = this.ps.hashCubes(required_resources);
 
-    // console.log('Resources: ', resources);
-    // console.log('Required: ', required);
-    // console.log('Required: ', required);
     for (let i = 2; i <= resources.length; i++) {
       for (const c of await this.ps.combine(resources, i)) {
         if (this.ps.checkValidCombo(c, required)) {
@@ -580,10 +610,8 @@ export class GameComponent implements OnInit {
           }
         }
       }
-      // console.log(combos);
     }
-    // console.timeEnd('test');
-    // console.log(valid_equations);
+
     valid_equations.length = 0;
     return false;
   }
@@ -640,9 +668,48 @@ export class GameComponent implements OnInit {
     .player3 .mat-progress-bar-fill::after { background-color: ${
       this.settings.player_colors[2]
     } !important; }
-    .player1  { color: ${this.settings.player_colors[0]} !important; }
-    .player2  { color: ${this.settings.player_colors[1]} !important; }
-    .player3  { color: ${this.settings.player_colors[2]} !important; }
+    .player1 .mat-progress-bar-buffer { background-color: ${invert(
+      this.settings.player_colors[0]
+    )} !important; }
+    .player2 .mat-progress-bar-buffer { background-color: ${invert(
+      this.settings.player_colors[1]
+    )} !important; }
+    .player3 .mat-progress-bar-buffer { background-color: ${invert(
+      this.settings.player_colors[2]
+    )} !important; }
+    .player1 .mat-chip { color: ${invert(
+      this.settings.player_colors[0]
+    )} !important; background-color: ${
+      this.settings.player_colors[0]
+    } !important; }
+    .player2 .mat-chip { color: ${invert(
+      this.settings.player_colors[1]
+    )} !important; background-color: ${
+      this.settings.player_colors[1]
+    } !important;}
+    .player3 .mat-chip { color: ${invert(
+      this.settings.player_colors[2]
+    )} !important; background-color: ${
+      this.settings.player_colors[2]
+    } !important;}
+    .player1 { color: ${invert(this.settings.player_colors[0])} !important; }
+    .player2 { color: ${invert(this.settings.player_colors[1])} !important; }
+    .player3 { color: ${invert(this.settings.player_colors[2])} !important; }
+    .player1 .mat-badge-content { color: ${invert(
+      this.settings.player_colors[0]
+    )} !important; background-color: ${
+      this.settings.player_colors[0]
+    } !important; }
+    .player2  .mat-badge-content { color: ${invert(
+      this.settings.player_colors[1]
+    )} !important; background-color: ${
+      this.settings.player_colors[1]
+    } !important;}
+    .player3 .mat-badge-content { color: ${invert(
+      this.settings.player_colors[2]
+    )} !important; background-color: ${
+      this.settings.player_colors[2]
+    } !important;}
     `;
     const head = document.getElementsByTagName('head')[0];
     // const styletag = document.createElement('style');
@@ -653,47 +720,68 @@ export class GameComponent implements OnInit {
     head.appendChild(this.playerStyles);
   }
 
+  checkSolution() {
+    const permutation = this.ps.hashCubes(this.solution_resources);
+    const perm_set = this.checkPermutationValue(permutation);
+    console.log(perm_set);
+    if (perm_set.size === this.goal) {
+      this.snackBar.open('Correct!');
+    } else {
+      this.snackBar.open('Incorrect!');
+    }
+  }
+
   cyclePlayers() {
-    const player = this.playerIterator.next();
-    if (!this.settings.player_human[player.value]) {
-      console.log('CPU');
-      const challenge_check = this.check_for_challenge();
-      if (!challenge_check) {
-        if (!this.universeSet) {
-          setTimeout(() => {
-            this.add_card();
+    if (this.all_resources.length <= 1) {
+      this.inChallenge = true;
+      this.turnSeconds = 120;
+    }
+    if (!this.inBonus) {
+      this.wasInBonus = false;
+      if (!this.inChallenge) {
+        const player = this.playerIterator.next();
+        if (!this.settings.player_human[player.value]) {
+          const challenge_check = this.check_for_challenge();
+          if (!challenge_check) {
+            if (!this.universeSet) {
+              setTimeout(() => {
+                this.add_card();
 
-            setTimeout(() => {
-              this.add_card();
-              this.universeSet = true;
-            }, 1000);
-          }, 1000);
-        } else if (this.universeSet && !this.goalSet) {
-          setTimeout(() => {
-            // this.goal_resources[3].push(this.number_resources.pop());
-            this.goal_resources[4].push(this.number_resources.pop());
-            this.goal = this.calculateGoal();
-            this.goalSet = true;
-            this.cyclePlayers();
-            this.snackBar.open('Goal Set!');
-          }, 3000);
-        } else {
-          setTimeout(() => {
-            switch (Math.floor(Math.random() * 6)) {
-              case 0:
-                this.forbidden_resources.push(this.all_resources.pop());
-                break;
-              case 1:
-                this.required_resources.push(this.all_resources.pop());
-                break;
-              default:
-                this.permitted_resources.push(this.all_resources.pop());
+                setTimeout(() => {
+                  this.add_card();
+                  this.universeSet = true;
+                }, 1000);
+              }, 1000);
+            } else if (this.universeSet && !this.goalSet) {
+              setTimeout(() => {
+                // this.goal_resources[3].push(this.number_resources.pop());
+                this.goal_resources[4].push(this.number_resources.pop());
+                this.goal = this.calculateGoal();
+                this.goalSet = true;
+                this.cyclePlayers();
+                this.snackBar.open('Goal Set!');
+              }, 3000);
+            } else {
+              setTimeout(() => {
+                switch (Math.floor(Math.random() * 6)) {
+                  case 0:
+                    this.forbidden_resources.push(this.all_resources.pop());
+                    break;
+                  case 1:
+                    this.required_resources.push(this.all_resources.pop());
+                    break;
+                  default:
+                    this.permitted_resources.push(this.all_resources.pop());
+                }
+
+                this.cyclePlayers();
+              }, 1200);
             }
-
-            this.cyclePlayers();
-          }, 1200);
+          }
         }
       }
+    } else {
+      this.inBonus = false;
     }
     // this.timer.startTimer();
   }
