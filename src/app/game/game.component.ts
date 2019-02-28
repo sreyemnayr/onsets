@@ -656,25 +656,17 @@ export class GameComponent implements OnInit {
   }
 
   randomRotate() {
-    if (this.settings.messy_cards) {
-      const baseInt = Math.floor(Math.random() * 6);
-      const flipInt = Math.floor(Math.random() * 2) * 180;
-      const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
-      return 'rotate(' + (baseInt + flipInt) * negInt + 'deg)';
-    } else {
-      return '';
-    }
+    const baseInt = Math.floor(Math.random() * 6);
+    const flipInt = Math.floor(Math.random() * 2) * 180;
+    const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
+    return 'rotate(' + (1 + baseInt + flipInt) * negInt + 'deg)';
   }
 
   randomRotateDice() {
-    if (this.settings.messy_cards) {
-      const baseInt = Math.floor(Math.random() * 6);
-      const flipInt = Math.floor(Math.random() * 4) * 90;
-      const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
-      return 'rotate(' + (baseInt + flipInt) * negInt + 'deg)';
-    } else {
-      return '';
-    }
+    const baseInt = Math.floor(Math.random() * 8);
+    const flipInt = Math.floor(Math.random() * 4) * 90;
+    const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
+    return 'rotate(' + (1 + baseInt + flipInt) * negInt + 'deg)';
   }
 
   calculateGoal() {

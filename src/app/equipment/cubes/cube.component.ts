@@ -1,7 +1,16 @@
-import { Component, OnInit, Input, Inject, InjectionToken } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  Input,
+  Inject,
+  InjectionToken
+} from '@angular/core';
 import { Cube } from './cube';
 
-export const CUBE = new InjectionToken<Cube>('cube', { providedIn: 'root',  factory: () => new Cube({}) } );
+export const CUBE = new InjectionToken<Cube>('cube', {
+  providedIn: 'root',
+  factory: () => new Cube({})
+});
 
 @Component({
   selector: 'app-cube',
@@ -11,8 +20,10 @@ export const CUBE = new InjectionToken<Cube>('cube', { providedIn: 'root',  fact
 export class CubeComponent implements OnInit {
   @Input() cube: Cube;
 
+  @Input() allow_reroll = true;
+
   constructor() {
-   this.cube = this.cube || new Cube({});
+    this.cube = this.cube || new Cube({});
   }
 
   rand() {
@@ -22,23 +33,23 @@ export class CubeComponent implements OnInit {
   roll() {
     let x = 0;
     const _this = this;
-    const intervalID = setInterval(function () {
-        _this.rand();
-       if (++x === 15) {
-           window.clearInterval(intervalID);
-       }
+    const intervalID = setInterval(function() {
+      _this.rand();
+      if (++x === 15) {
+        window.clearInterval(intervalID);
+      }
     }, 10);
   }
 
   handle_doubleclick() {
-    this.roll();
+    if (this.allow_reroll) {
+      this.roll();
+    }
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() {}
 
   inspect() {
     return 'Cube';
   }
-
 }
