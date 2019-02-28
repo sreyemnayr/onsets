@@ -41,8 +41,8 @@
             <mat-icon>refresh</mat-icon>
           </button>
         </div>
-        <button *ngIf="goalSet && !wasInBonus" mat-raised-button class="challenge-button" color="accent" (click)="snackBar.open('Challenge!'); inChallenge = true; turnSeconds=120;">CHALLENGE</button>
-        <button *ngIf="goalSet && !wasInBonus" mat-raised-button class="challenge-button" color="primary" (click)="snackBar.open('Bonus!'); inBonus = true; wasInBonus = true;">BONUS</button>
+        <button *ngIf="goalSet && !wasInBonus && !inChallenge" mat-raised-button class="challenge-button" color="accent" (click)="snackBar.open('Challenge!'); inChallenge = true; turnSeconds=120;">CHALLENGE</button>
+        <button *ngIf="goalSet && !wasInBonus && !inChallenge" mat-raised-button class="challenge-button" color="primary" (click)="snackBar.open('Bonus!'); inBonus = true; wasInBonus = true;">BONUS</button>
       </div>
   </div>
 </div>

@@ -792,7 +792,7 @@ export class GameComponent implements OnInit {
               }, 3000);
             } else {
               setTimeout(() => {
-                switch (Math.floor(Math.random() * 6)) {
+                switch (Math.floor(Math.random() * 16)) {
                   case 0:
                     this.forbidden_resources.push(this.all_resources.pop());
                     break;

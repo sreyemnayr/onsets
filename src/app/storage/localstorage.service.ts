@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@angular/core';
 import { LOCAL_STORAGE, StorageService } from 'ngx-webstorage-service';
 import { Settings } from '../settings';
 
-const STORAGE_KEY = 'local_onsets_v190228';
+const STORAGE_KEY = 'local_onsets_v190228a';
 
 @Injectable({
   providedIn: 'root'

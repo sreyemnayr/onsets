@@ -21,7 +21,7 @@ export class Settings {
     num_players = 2,
     use_timer = true,
     messy_cards = true,
-    player_names = ['Player 1', 'OnSetsBot', 'Player 3'],
+    player_names = ['Academician', 'Scholar', 'Intelligentsia'],
     player_colors = ['#47f5bc', '#ff874a', '#f848bf'],
     player_human = [true, false, true]
   ) {
