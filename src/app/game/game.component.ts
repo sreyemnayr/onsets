@@ -107,6 +107,7 @@ export class GameComponent implements OnInit {
   not_V: Set<number>;
   card_sets: Array<Set<number>>;
   card_rotations: Array<string>;
+  dice_rotations: Array<string>;
 
   numCards: any;
   showSettings: boolean;
@@ -289,6 +290,7 @@ export class GameComponent implements OnInit {
     this.wasInBonus = false;
     this.turnSeconds = 60;
     this.card_rotations = [];
+    this.dice_rotations = [];
     this.reconstruct();
   }
 
@@ -389,6 +391,7 @@ export class GameComponent implements OnInit {
 
     for (const i of this.arrayNums(15)) {
       this.card_rotations[i] = this.randomRotate();
+      this.dice_rotations[i] = this.randomRotateDice();
     }
 
     if (this.settings.auto_deal_minimum) {
@@ -654,8 +657,19 @@ export class GameComponent implements OnInit {
 
   randomRotate() {
     if (this.settings.messy_cards) {
-      const baseInt = Math.floor(Math.random() * 11);
+      const baseInt = Math.floor(Math.random() * 6);
       const flipInt = Math.floor(Math.random() * 2) * 180;
+      const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
+      return 'rotate(' + (baseInt + flipInt) * negInt + 'deg)';
+    } else {
+      return '';
+    }
+  }
+
+  randomRotateDice() {
+    if (this.settings.messy_cards) {
+      const baseInt = Math.floor(Math.random() * 6);
+      const flipInt = Math.floor(Math.random() * 4) * 90;
       const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
       return 'rotate(' + (baseInt + flipInt) * negInt + 'deg)';
     } else {
@@ -856,7 +870,7 @@ export class GameComponent implements OnInit {
       </div>
       <div>
         <mat-slide-toggle [(ngModel)]="data.settings.messy_cards"
-          >Messy Cards?</mat-slide-toggle
+          >Messy Pieces?</mat-slide-toggle
         >
       </div>
       <div>

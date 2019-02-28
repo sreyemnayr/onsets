@@ -23,7 +23,7 @@
            cdkDropList cdkDropListOrientation="horizontal" #resourceList="cdkDropList"
            [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList, requiredList, solutionList]"
            [cdkDropListData]="all_resources" (cdkDropListDropped)="drop($event)">
-        <div class="dragme" cdkDrag *ngFor="let cube of all_resources">
+        <div class="dragme" [style.transform]="dice_rotations[i]" cdkDrag *ngFor="let cube of all_resources; let i = index;">
           <ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, elementary: settings.elementary}"  ></ng-container>
         </div>
         <div [ngClass]="{'numberList': true, 'd-flex': !goalSet, 'flex-wrap': !goalSet}"
