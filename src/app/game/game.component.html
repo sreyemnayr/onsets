@@ -15,7 +15,7 @@
 <div class="d-flex flex-column flex-lg-row ">
   <div class="p-2 d-flex flex-grow-0 w-100">
     <div class=" d-flex flex-wrap flex-md-nowrap flex-md-row w-100">
-      <app-card style="display: inline-flex" *ngFor="let card of universe" [card]="card" [@itemAnim]></app-card><div class="d-flex flex-column"><button *ngIf="canSetUniverse && !universeSet" mat-icon-button (click)="universeSet = true; snackBar.open('Universe Set!');"><mat-icon>check_circle</mat-icon></button><button mat-icon-button (click)="add_card()" *ngIf="!universeSet"><mat-icon>library_add</mat-icon></button></div></div></div>
+      <app-card [style.display]="'inline-flex'" [style.transform]="card_rotations[i]" *ngFor="let card of universe; let i = index;" [card]="card" [@itemAnim]></app-card><div class="d-flex flex-column"><button *ngIf="canSetUniverse && !universeSet" mat-icon-button (click)="universeSet = true; snackBar.open('Universe Set!');"><mat-icon>check_circle</mat-icon></button><button mat-icon-button (click)="add_card()" *ngIf="!universeSet"><mat-icon>library_add</mat-icon></button></div></div></div>
   <div class="p-2 d-flex flex-shrink-1 ">
 
       <div [ngClass]="{'d-flex': universeSet, 'flex-wrap': universeSet, 'invisible': !universeSet, 'justify-content-center': true, 'align-content-end': true}"

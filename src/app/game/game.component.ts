@@ -106,6 +106,7 @@ export class GameComponent implements OnInit {
   not_Y: Set<number>;
   not_V: Set<number>;
   card_sets: Array<Set<number>>;
+  card_rotations: Array<string>;
 
   numCards: any;
   showSettings: boolean;
@@ -287,6 +288,7 @@ export class GameComponent implements OnInit {
     this.inBonus = false;
     this.wasInBonus = false;
     this.turnSeconds = 60;
+    this.card_rotations = [];
     this.reconstruct();
   }
 
@@ -384,6 +386,10 @@ export class GameComponent implements OnInit {
     this.inBonus = false;
     this.wasInBonus = false;
     this.turnSeconds = 60;
+
+    for (const i of this.arrayNums(15)) {
+      this.card_rotations[i] = this.randomRotate();
+    }
 
     if (this.settings.auto_deal_minimum) {
       const minimum_cards = this.settings.elementary ? 6 : 10;
@@ -646,6 +652,17 @@ export class GameComponent implements OnInit {
     }
   }
 
+  randomRotate() {
+    if (this.settings.messy_cards) {
+      const baseInt = Math.floor(Math.random() * 11);
+      const flipInt = Math.floor(Math.random() * 2) * 180;
+      const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
+      return 'rotate(' + (baseInt + flipInt) * negInt + 'deg)';
+    } else {
+      return '';
+    }
+  }
+
   calculateGoal() {
     const a = this.calculateValue(this.goal_resources[0], 1);
     const b = this.calculateValue(this.goal_resources[1], 1);
@@ -835,6 +852,11 @@ export class GameComponent implements OnInit {
       <div>
         <mat-slide-toggle [(ngModel)]="data.settings.allow_reroll"
           >Allow re-rolls?</mat-slide-toggle
+        >
+      </div>
+      <div>
+        <mat-slide-toggle [(ngModel)]="data.settings.messy_cards"
+          >Messy Cards?</mat-slide-toggle
         >
       </div>
       <div>

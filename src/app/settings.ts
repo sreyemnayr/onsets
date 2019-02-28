@@ -6,6 +6,7 @@ export class Settings {
   allow_reroll: boolean;
   dev_mode: boolean;
   use_timer: boolean;
+  messy_cards: boolean;
   num_players: number;
   player_names: Array<string>;
   player_colors: Array<string>;
@@ -19,6 +20,7 @@ export class Settings {
     dev_mode = false,
     num_players = 2,
     use_timer = true,
+    messy_cards = true,
     player_names = ['Player 1', 'OnSetsBot', 'Player 3'],
     player_colors = ['#47f5bc', '#ff874a', '#f848bf'],
     player_human = [true, false, true]
@@ -34,5 +36,6 @@ export class Settings {
     this.player_colors = player_colors;
     this.player_human = player_human;
     this.use_timer = use_timer;
+    this.messy_cards = messy_cards;
   }
 }
