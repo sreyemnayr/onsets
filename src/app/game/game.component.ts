@@ -127,6 +127,7 @@ export class GameComponent implements OnInit {
   permitted_resources: Array<any>;
   required_resources: Array<any>;
   solution_resources: Array<any>;
+  restriction_resources: Array<any>;
 
   canSetUniverse = false;
 
@@ -263,6 +264,7 @@ export class GameComponent implements OnInit {
     this.permitted_resources = [];
     this.required_resources = [];
     this.solution_resources = [];
+    this.restriction_resources = [];
 
     this.settings = storage.getSettings();
 
@@ -377,6 +379,7 @@ export class GameComponent implements OnInit {
     this.permitted_resources = [];
     this.required_resources = [];
     this.solution_resources = [];
+    this.restriction_resources = [];
     this.stage = 0;
     this.universeSet = false;
     this.canSetUniverse = false;
@@ -463,7 +466,10 @@ export class GameComponent implements OnInit {
       );
     } else {
       console.log(event.container.id);
-      if (event.container.id === 'solutionList') {
+      if (
+        event.container.id === 'solutionList' ||
+        event.container.id === 'restrictionList'
+      ) {
         copyArrayItem(
           event.previousContainer.data,
           event.container.data,

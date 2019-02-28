@@ -21,7 +21,7 @@
       <div [ngClass]="{'d-flex': universeSet, 'flex-wrap': universeSet, 'invisible': !universeSet, 'justify-content-center': true, 'align-content-end': true}"
            [style.display]="!universeSet ? 'none' : ''"
            cdkDropList cdkDropListOrientation="horizontal" #resourceList="cdkDropList"
-           [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList, requiredList, solutionList]"
+           [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList, requiredList, solutionList, restrictionList]"
            [cdkDropListData]="all_resources" (cdkDropListDropped)="drop($event)">
         <div class="dragme" [style.transform]="settings.messy_cards ? dice_rotations[i] : ''" cdkDrag *ngFor="let cube of all_resources; let i = index;">
           <ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, elementary: settings.elementary, allow_reroll: settings.allow_reroll}"  ></ng-container>
@@ -56,17 +56,17 @@
   </div>
   <div class="col text-center">
     <h4 class="nomobile">Permitted</h4><h4 class="onlymobile">P</h4>
-    <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #permittedList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList]" [cdkDropListData]="permitted_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of permitted_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
+    <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #permittedList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList, restrictionList]" [cdkDropListData]="permitted_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of permitted_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
   </div>
   <div class="col text-center">
     <h4 class="nomobile">Required</h4><h4 class="onlymobile">R</h4>
-     <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #requiredList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList]" [cdkDropListData]="required_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of required_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
+     <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #requiredList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList, restrictionList]" [cdkDropListData]="required_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of required_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
   </div>
 
   </div>
   <div class="row brown">
     <div class="col-5 bottom-border text-center">
-      <div class="d-flex justify-content-between align-items-center h-100"><div>Num(</div><div class="resourceContainer" [style.display]="inChallenge ? '' : 'none'" cdkDropList cdkDropListOrientation="horizontal" #solutionList="cdkDropList" id="solutionList" [cdkDropListConnectedTo]="[]" [cdkDropListData]="solution_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of solution_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div><div>)</div></div>
+      <div class="d-flex justify-content-between align-items-center h-100"><div>Num(</div><div  [ngClass]="{'solutionList': inChallenge, 'noSolutionList': !inChallenge}" cdkDropList cdkDropListOrientation="horizontal" #solutionList="cdkDropList" id="solutionList" [cdkDropListConnectedTo]="[]" [cdkDropListData]="solution_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of solution_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div><div>)</div></div>
       </div>
     <div class="col-2 text-center"><h1>=</h1></div>
     <div class="col-5 bottom-border">
@@ -91,7 +91,7 @@
     <div class="col-5 text-center"><h4>Goal <button *ngIf="!goalSet" mat-icon-button (click)="goal = calculateGoal(); goalSet = true; cyclePlayers(); snackBar.open('Goal Set!');"><mat-icon>check_circle</mat-icon></button><span *ngIf="goalSet && settings.show_goal"> = {{ goal }}</span></h4></div>
   </div>
   <div class="row brown">
-    <div class="col-12 bottom-border"><h1>&nbsp;</h1></div>
+    <div class="col-12 bottom-border"><div  [ngClass]="{'text-center': true, 'solutionList': inChallenge && !settings.elementary, 'noSolutionList': !inChallenge || settings.elementary }" cdkDropList cdkDropListOrientation="horizontal" #restrictionList="cdkDropList" id="restrictionList" [cdkDropListConnectedTo]="[]" [cdkDropListData]="restriction_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of restriction_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div></div>
   </div>
   <div class="row brown">
     <div class="col-12 text-center"><h4>Restriction Statement</h4></div>

@@ -132,13 +132,58 @@ h3.float-left, h3.float-right {
 }
 
 .numberList {
-  min-height:44px;
-  min-width:44px;
   border: #b0b0b0 dotted 1px;
   border-radius: 2px;
   margin: 0;
   padding: 0;
+  min-height: 22px;
+  min-width: 22px;
+
+  line-height:1;
+  @media (min-width: 768px)  {
+    min-width: 33px;
+    min-height: 33px;
+  }
+
+
+@media (min-width: 992px) {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
+
+.solutionList {
+  border: #b0b0b0 dotted 1px;
+
+  border-radius: 2px;
+  margin: 0;
+  padding: 0;
+  min-height: 22px;
+  min-width: 22px;
+  opacity: 1.0;
+
+  transition: opacity 250ms;
+
+  line-height:1;
+  @media (min-width: 768px)  {
+    min-width: 33px;
+    min-height: 33px;
+  }
+
+
+@media (min-width: 992px) {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+.noSolutionList {
+  height: 0px;
+  width: 0px;
+
+  opacity: 0;
+}
+
 
 .h-100 {
   height: 100%;
