@@ -108,7 +108,7 @@ h3.float-left, h3.float-right {
 .goalListEquations {
   display:inline-block;
   height: 22px;
-  min-width: 180px;
+  width: 100%;
   border: #b0b0b0 dotted 1px;
   background-color: rgba(135, 238, 0, 0.2);
   border-radius: 2px;
@@ -117,14 +117,14 @@ h3.float-left, h3.float-right {
   overflow: hidden;
   line-height:1;
   @media (min-width: 768px)  {
-    min-width: 270px;
+   
     height: 33px;
   }
 
 
 @media (min-width: 992px) {
     height: 44px;
-    min-width: 500px;
+    
   }
 
 }
