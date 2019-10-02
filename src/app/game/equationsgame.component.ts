@@ -540,7 +540,8 @@ export class EquationsGameComponent implements OnInit {
 
   randomRotateDice() {
     const baseInt = Math.floor(Math.random() * 8);
-    const flipInt = Math.floor(Math.random() * 4) * 90;
+    //const flipInt = Math.floor(Math.random() * 4) * 90;
+    const flipInt = 0;
     const negInt = Math.floor(Math.random() * 2) === 0 ? 1 : -1;
     return 'rotate(' + (1 + baseInt + flipInt) * negInt + 'deg)';
   }
