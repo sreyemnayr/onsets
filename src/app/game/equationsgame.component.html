@@ -1,0 +1,96 @@
+<!--The content below is only a placeholder and can be replaced.
+<div class="settings" [style.display]="showSettings ? 'block' : 'none'">
+<div><label for="numCards">Cards</label><input id="numCards" #numCards type="number" (change)="displayCards = numCards.valueAsNumber; reconstruct()" value=7 /></div>
+  <div><label for="numNumberCubes">Numeral Cubes</label><input id="numNumberCubes" #numNumberCubes type="number" value=3 (change)="ref.markForCheck()"/></div>
+  <div><label for="numColorCubes">Color Cubes</label><input id="numColorCubes" #numColorCubes type="number"  value=8 (change)="ref.markForCheck()" /></div>
+  <div><label for="numOperationCubes">Red Operation Cubes</label><input id="numOperationCubes" #numOperationCubes type="number"  value=4 (change)="ref.markForCheck()" /></div>
+  <div><label for="numRelationCubes">Blue Relation Cubes</label><input id="numRelationCubes" #numRelationCubes type="number"  value=4 (change)="ref.markForCheck()" /></div>
+
+</div>
+<button (click)="showSettings = !showSettings">{{ showSettings ? 'Hide' : 'Show' }} Settings</button>-->
+<div class="container">
+    <app-timer #timer [playerClass]="currentPlayer" [playerName]="currentPlayerName" [playerIcon]="settings.player_human[currentPlayerInt] ? 'person' : 'android'" [seconds]="turnSeconds"></app-timer>
+</div>
+<div class="container">
+  <div class="d-flex flex-column flex-lg-row ">
+    
+    <div class="p-2 d-flex flex-shrink-1 ">
+
+        <div [ngClass]="{'d-flex': true, 'flex-wrap': true, 'justify-content-center': true, 'align-content-end': true}"
+            cdkDropList cdkDropListOrientation="horizontal" #resourceList="cdkDropList"
+            [cdkDropListConnectedTo]="[resourceList, forbiddenList, permittedList, requiredList, solutionList, goalList]"
+            [cdkDropListData]="all_resources" (cdkDropListDropped)="drop($event)">
+          <div class="dragme" [style.transform]="settings.messy_cards ? dice_rotations[i] : ''" cdkDrag 
+            *ngFor="let cube of all_resources; let i = index;" 
+            (dblclick)="cube.handle_doubleclick()" 
+            (click)="cube.selected = !cube.selected">
+              <ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, elementary: settings.elementary, allow_reroll: settings.allow_reroll}"  ></ng-container>
+              <button mat-icon-button color="accent" class="floating-button" *ngIf="cube.selected" (click)="cube.handle_doubleclick(); "><mat-icon class="small-icon">swap_vertical_circle</mat-icon></button>
+          </div>
+
+          <div>
+            <button *ngIf="!goalSet && settings.allow_reroll" mat-icon-button color="primary" (click)="rollCubes()">
+              <mat-icon>refresh</mat-icon>
+            </button>
+          </div>
+          <button *ngIf="goalSet && !wasInBonus && !inChallenge" mat-raised-button class="challenge-button" color="accent" (click)="snackBar.open('Challenge!'); inChallenge = true; turnSeconds=120;">CHALLENGE</button>
+          <button *ngIf="goalSet && !wasInBonus && !inChallenge" mat-raised-button class="challenge-button" color="primary" (click)="snackBar.open('Bonus!'); inBonus = true; wasInBonus = true;">BONUS</button>
+        </div>
+    </div>
+  </div>
+
+<div class="container gameboard">
+  <div class="row yellow">
+
+  <div class="col text-center">
+    <h4 class="nomobile">Forbidden</h4><h4 class="onlymobile">F</h4>
+    <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #forbiddenList="cdkDropList" [cdkDropListConnectedTo]="[resourceList ]" [cdkDropListData]="forbidden_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of forbidden_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
+  </div>
+  <div class="col text-center">
+    <h4 class="nomobile">Permitted</h4><h4 class="onlymobile">P</h4>
+    <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #permittedList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList, restrictionList]" [cdkDropListData]="permitted_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of permitted_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
+  </div>
+  <div class="col text-center">
+    <h4 class="nomobile">Required</h4><h4 class="onlymobile">R</h4>
+     <div class="resourceContainer" cdkDropList cdkDropListOrientation="horizontal" #requiredList="cdkDropList" [cdkDropListConnectedTo]="[resourceList, solutionList, restrictionList]" [cdkDropListData]="required_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of required_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div>
+  </div>
+
+  </div>
+  <div class="row teal">
+    <div class="col-5 bottom-border text-center">
+      <div class="d-flex justify-content-between align-items-center h-100"><div  [ngClass]="{'solutionList': inChallenge, 'noSolutionList': !inChallenge}" cdkDropList cdkDropListOrientation="horizontal" #solutionList="cdkDropList" id="solutionList" [cdkDropListConnectedTo]="[]" [cdkDropListData]="solution_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of solution_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div></div>
+      </div>
+    <div class="col-2 text-center"><h1>=</h1></div>
+    <div class="col-5 bottom-border">
+      <div class="goalListRow">
+        <div class="goalList" #goalList="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[resourceList, goalList]" 
+          [cdkDropListData]="goal_resources" (cdkDropListDropped)="drop($event)">
+          <div class="dragme" (dblclick)="cube.handle_doubleclick()" (click)="cube.selected = !cube.selected" cdkDrag *ngFor="let cube of goal_resources">
+            <ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container>
+            <button mat-icon-button color="accent" class="floating-button" *ngIf="cube.selected" (click)="cube.handle_doubleclick();"><mat-icon class="small-icon">swap_vertical_circle</mat-icon></button>
+          </div>
+        </div>
+      </div>
+      
+    </div>
+  </div>
+  <div class="row teal">
+    <div class="col-5 text-center"><h4>Solution <button *ngIf="inChallenge" mat-icon-button (click)="checkSolution(); reconstruct(); rollCubes();  cyclePlayers(); "><mat-icon>check_circle</mat-icon></button></h4></div>
+    <div class="col-2 text-center"></div>
+    <div class="col-5 text-center"><h4>Goal <button *ngIf="!goalSet" mat-icon-button (click)="goal = calculateGoal(); goalSet = true; cyclePlayers(); snackBar.open('Goal Set!');"><mat-icon>check_circle</mat-icon></button><span *ngIf="goalSet && settings.show_goal"> = {{ goal }}</span></h4></div>
+  </div>
+  <div class="row teal">
+    <div class="col-12 bottom-border"><div  [ngClass]="{'text-center': true, 'solutionList': inChallenge && !settings.elementary, 'noSolutionList': !inChallenge || settings.elementary }" cdkDropList cdkDropListOrientation="horizontal" #restrictionList="cdkDropList" id="restrictionList" [cdkDropListConnectedTo]="[]" [cdkDropListData]="restriction_resources" (cdkDropListDropped)="drop($event)"><div class="dragme" cdkDrag *ngFor="let cube of restriction_resources"><ng-container *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube, allow_reroll: settings.allow_reroll}"  ></ng-container></div></div></div>
+  </div>
+  
+</div>
+<button mat-raised-button color="primary" (click)="reconstruct(); rollCubes();  cyclePlayers();">Reset Game</button>
+
+<button mat-icon-button (click)="openSettings()"><mat-icon>settings</mat-icon></button>
+  <button *ngIf="settings.dev_mode" mat-raised-button color="accent" (click)="evaluate_solutions()">Test Evaluator</button>
+
+  <div class="float-right"><a mat-icon-button href="https://github.com/sreyemnayr/onsets"><mat-icon>code</mat-icon></a> <pre [style.display]="'inline'" [style.fontSize]="'8pt'">Created by Ryan Meyers for SGES Academic League Team</pre></div>
+
+</div>
+
+<a routerLink="/onsets" routerLinkActive="active"><button mat-raised-button>Play On-Sets</button></a>

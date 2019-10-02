@@ -1,4 +1,5 @@
 export class Settings {
+  game: string;
   elementary: boolean;
   fix_rolls: boolean;
   auto_deal_minimum: boolean;
@@ -12,6 +13,7 @@ export class Settings {
   player_colors: Array<string>;
   player_human: Array<boolean>;
   constructor(
+    game = 'equations',
     elementary = true,
     fix_rolls = true,
     auto_deal_minimum = true,
@@ -25,6 +27,7 @@ export class Settings {
     player_colors = ['#47f5bc', '#ff874a', '#f848bf'],
     player_human = [true, false, true]
   ) {
+    this.game = game;
     this.elementary = elementary;
     this.fix_rolls = fix_rolls;
     this.auto_deal_minimum = auto_deal_minimum;

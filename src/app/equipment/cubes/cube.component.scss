@@ -10,10 +10,27 @@ div {
 .cube {
   transform: rotate(0);
   transition: transform 200ms;
+
+}
+
+.cube div {
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .invert {
   transform: rotate(180deg);
+  transition: transform 200ms;
+}
+
+.rotate {
+  transform: rotate(90deg);
+  transition: transform 200ms;
+}
+
+.invert.rotate {
+  transform: rotate(270deg);
   transition: transform 200ms;
 }
 

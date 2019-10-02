@@ -10,6 +10,7 @@ export class Cube {
   selected: boolean;
   invert: boolean;
   position: any;
+  rotate: boolean;
   klass: string;
   constructor({
                 klass= 'traditional',
@@ -24,7 +25,8 @@ export class Cube {
                   ],
                 face= 0,
                 selected= false,
-                position= null
+                position= null,
+                rotate= false,
   }) {
     this.invert = false;
     this.klass = klass;
@@ -33,5 +35,6 @@ export class Cube {
     this.face = face;
     this.selected = selected;
     this.position = position;
+    this.rotate = rotate;
   }
 }

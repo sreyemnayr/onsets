@@ -11,6 +11,7 @@ import {
   MatIconModule,
   MatSlideToggleModule,
   MatInputModule,
+  MatSelectModule,
   MatDialogModule,
   MatSnackBarModule,
   MAT_SNACK_BAR_DEFAULT_OPTIONS,
@@ -28,13 +29,36 @@ import { OperationcubeComponent } from './equipment/cubes/operationcube/operatio
 import { RelationcubeComponent } from './equipment/cubes/relationcube/relationcube.component';
 import { ColorcubeComponent } from './equipment/cubes/colorcube/colorcube.component';
 
+import { GreencubeComponent } from './equipment/cubes/greencube/greencube.component';
+import { RedcubeComponent } from './equipment/cubes/redcube/redcube.component';
+import { BlackcubeComponent } from './equipment/cubes/blackcube/blackcube.component';
+import { BluecubeComponent } from './equipment/cubes/bluecube/bluecube.component';
+
 import { DynamicModule } from 'ng-dynamic-component';
-import {
-  ChallengeDialogComponent,
-  GameComponent,
-  SettingsDialogComponent
-} from './game/game.component';
+import {GameComponent} from './game/game.component';
+import {DefaultGameComponent} from './game/defaultgame.component';
+import {EquationsGameComponent} from './game/equationsgame.component';
+import {ChallengeDialogComponent} from './game/challengedialog.component';
+import {SettingsDialogComponent} from './game/settingsdialog.component';
+
 import { TimerComponent } from './timer/timer.component';
+
+import {RouterModule, Routes} from '@angular/router';
+
+const routes: Routes = [
+  {
+    path: '',
+    component: DefaultGameComponent
+  },
+  {
+    path: 'onsets',
+    component: GameComponent
+  },
+  {
+    path: 'equations',
+    component: EquationsGameComponent
+  }
+];
 
 @NgModule({
   declarations: [
@@ -42,6 +66,8 @@ import { TimerComponent } from './timer/timer.component';
     SettingsDialogComponent,
     ChallengeDialogComponent,
     GameComponent,
+    DefaultGameComponent,
+    EquationsGameComponent,
     TimerComponent
   ],
   imports: [
@@ -53,6 +79,7 @@ import { TimerComponent } from './timer/timer.component';
     MatBadgeModule,
     MatIconModule,
     MatSlideToggleModule,
+    MatSelectModule,
     MatFormFieldModule,
     FormsModule,
     MatDialogModule,
@@ -62,17 +89,23 @@ import { TimerComponent } from './timer/timer.component';
       NumbercubeComponent,
       OperationcubeComponent,
       RelationcubeComponent,
-      ColorcubeComponent
+      ColorcubeComponent,
+      RedcubeComponent,
+      BluecubeComponent,
+      BlackcubeComponent,
+      GreencubeComponent
     ]),
     StorageServiceModule,
     MatInputModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    RouterModule.forRoot(routes)
   ],
   exports: [
     MatButtonModule,
     MatFormFieldModule,
     MatSlideToggleModule,
     MatInputModule,
+    MatSelectModule,
     MatProgressBarModule,
     MatChipsModule,
     MatBadgeModule
@@ -87,7 +120,11 @@ import { TimerComponent } from './timer/timer.component';
     NumbercubeComponent,
     OperationcubeComponent,
     RelationcubeComponent,
-    ColorcubeComponent
+    ColorcubeComponent,
+    RedcubeComponent,
+    GreencubeComponent,
+    BlackcubeComponent,
+    BluecubeComponent
   ]
 })
 export class AppModule {}
