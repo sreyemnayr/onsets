@@ -63,7 +63,7 @@
     <div class="col-2 text-center"><h1>=</h1></div>
     <div class="col-5 bottom-border">
       <div class="goalListRow">
-        <div class="goalList" #goalList="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[resourceList, goalList]" 
+        <div class="goalListEquations" #goalList="cdkDropList" cdkDropList [cdkDropListConnectedTo]="[resourceList, goalList]" 
           [cdkDropListData]="goal_resources" (cdkDropListDropped)="drop($event)">
           <div class="dragme" (dblclick)="cube.handle_doubleclick()" (click)="cube.selected = !cube.selected" cdkDrag *ngFor="let cube of goal_resources">
             <ng-container  *ngComponentOutlet="cube.constructor; ndcDynamicInputs: {cube: cube.cube}"></ng-container>

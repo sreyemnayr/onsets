@@ -84,9 +84,33 @@ h3.float-left, h3.float-right {
 .goalList {
   display:inline-block;
   height: 22px;
+  min-width: 22px;
+  border: #b0b0b0 dotted 1px;
+  
+  border-radius: 2px;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  line-height:1;
+  @media (min-width: 768px)  {
+    min-width: 33px;
+    height: 33px;
+  }
+
+
+@media (min-width: 992px) {
+    height: 44px;
+    width: 44px;
+  }
+
+}
+
+.goalListEquations {
+  display:inline-block;
+  height: 22px;
   min-width: 180px;
   border: #b0b0b0 dotted 1px;
-  background-color: rgba(135, 238, 0, 0.3);
+  background-color: rgba(135, 238, 0, 0.2);
   border-radius: 2px;
   margin: 0;
   padding: 0;
@@ -100,7 +124,7 @@ h3.float-left, h3.float-right {
 
 @media (min-width: 992px) {
     height: 44px;
-    width: 44px;
+    min-width: 500px;
   }
 
 }
