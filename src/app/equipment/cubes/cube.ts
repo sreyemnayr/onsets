@@ -2,6 +2,7 @@ export const OPERATOR = 1;
 export const IDENTIFIER = 2;
 export const MODIFIER = 3;
 export const RESTRICTOR = 4;
+export const PUNCTUATION = 5;
 
 export class Cube {
   sides: number;

@@ -33,6 +33,7 @@ import { GreencubeComponent } from './equipment/cubes/greencube/greencube.compon
 import { RedcubeComponent } from './equipment/cubes/redcube/redcube.component';
 import { BlackcubeComponent } from './equipment/cubes/blackcube/blackcube.component';
 import { BluecubeComponent } from './equipment/cubes/bluecube/bluecube.component';
+import { ParencubeComponent } from './equipment/cubes/parencube/parencube.component';
 
 import { DynamicModule } from 'ng-dynamic-component';
 import {GameComponent} from './game/game.component';
@@ -93,7 +94,8 @@ const routes: Routes = [
       RedcubeComponent,
       BluecubeComponent,
       BlackcubeComponent,
-      GreencubeComponent
+      GreencubeComponent,
+      ParencubeComponent,
     ]),
     StorageServiceModule,
     MatInputModule,
@@ -124,7 +126,8 @@ const routes: Routes = [
     RedcubeComponent,
     GreencubeComponent,
     BlackcubeComponent,
-    BluecubeComponent
+    BluecubeComponent,
+    ParencubeComponent,
   ]
 })
 export class AppModule {}

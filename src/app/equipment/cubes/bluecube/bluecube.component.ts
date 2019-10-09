@@ -9,7 +9,7 @@ import { Cube, IDENTIFIER, OPERATOR, MODIFIER } from '../cube';
   host: {'class': 'cube'}
 })
 export class BluecubeComponent extends CubeComponent  {
- 
+
   handle_doubleclick() {
     if (!this.cube.rotate) {
       this.cube.rotate = !this.cube.rotate;
@@ -27,8 +27,8 @@ export class BluecubeComponent extends CubeComponent  {
       });
     }
     this.cube.faces = [
-                  {klass: '', value: '×', functions_as: OPERATOR},
-                  {klass: '', value: '÷', functions_as: OPERATOR},
+                  {klass: '', label: '×', value: '*', functions_as: OPERATOR},
+                  {klass: '', label: '÷', value: '/', functions_as: OPERATOR},
                   {klass: '', value: '0', functions_as: IDENTIFIER},
                   {klass: '', value: '1', functions_as: IDENTIFIER},
                   {klass: '', value: '2', functions_as: IDENTIFIER},

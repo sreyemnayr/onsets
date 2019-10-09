@@ -39,8 +39,8 @@ export class BlackcubeComponent extends CubeComponent  {
     if (this.elementary) {
       if (this.cube.face > 1) { this.cube.face = 0; }
       this.cube.faces = [
-                    {klass: '', value: '+', functions_as: OPERATOR},
-                    {klass: '', value: '÷', functions_as: OPERATOR},
+                    {klass: '', label: '+', value: '+', functions_as: OPERATOR},
+                    {klass: '', label: '÷', value: '/', functions_as: OPERATOR},
                    // {klass: '', value: '√', functions_as: MODIFIER},
                     {klass: '', value: '8', functions_as: IDENTIFIER},
                     {klass: '', value: '7', functions_as: IDENTIFIER},
@@ -48,9 +48,9 @@ export class BlackcubeComponent extends CubeComponent  {
       ];
     } else {
       this.cube.faces = [
-                    {klass: '', value: '+', functions_as: OPERATOR},
-                    {klass: '', value: '÷', functions_as: OPERATOR},
-                    {klass: '', value: '√', functions_as: MODIFIER},
+                    {klass: '', label: '+', value: '+', functions_as: OPERATOR},
+                    {klass: '', label: '÷', value: '/', functions_as: OPERATOR},
+                    {klass: '', label: '√', value: 'root', functions_as: MODIFIER},
                     {klass: '', value: '8', functions_as: IDENTIFIER},
                     {klass: '', value: '7', functions_as: IDENTIFIER},
                     {klass: 'marker', value: '9', functions_as: IDENTIFIER},

@@ -39,8 +39,8 @@ export class GreencubeComponent extends CubeComponent  {
     if (this.elementary) {
       if (this.cube.face > 4) { this.cube.face = 0; }
       this.cube.faces = [
-                    {klass: '', value: '×', functions_as: OPERATOR},
-                    {klass: '', value: '−', functions_as: OPERATOR},
+                    {klass: '', label: '×', value: '*', functions_as: OPERATOR},
+                    {klass: '', label: '−', value: '-', functions_as: OPERATOR},
                     // {klass: '', value: '∗', functions_as: MODIFIER},
                     {klass: '', value: '4', functions_as: IDENTIFIER},
                     {klass: '', value: '5', functions_as: IDENTIFIER},
@@ -48,9 +48,9 @@ export class GreencubeComponent extends CubeComponent  {
       ];
     } else {
       this.cube.faces = [
-                    {klass: '', value: '×', functions_as: OPERATOR},
-                    {klass: '', value: '−', functions_as: OPERATOR},
-                    {klass: '', value: '∗', functions_as: MODIFIER},
+                    {klass: '', label: '×', value: '*', functions_as: OPERATOR},
+                    {klass: '', label: '−', value: '-', functions_as: OPERATOR},
+                    {klass: '', label: '∗', value: '^', functions_as: MODIFIER},
                     {klass: '', value: '4', functions_as: IDENTIFIER},
                     {klass: '', value: '5', functions_as: IDENTIFIER},
                     {klass: 'marker', value: '6', functions_as: IDENTIFIER},

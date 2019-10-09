@@ -1,4 +1,3 @@
-
 import {
   Component,
   ChangeDetectorRef,
@@ -23,19 +22,13 @@ import {
 
 import invert from 'invert-color';
 
-import { Deck } from '../equipment/cards/deck';
-
-import { NumbercubeComponent } from '../equipment/cubes/numbercube/numbercube.component';
-import { ColorcubeComponent } from '../equipment/cubes/colorcube/colorcube.component';
-import { RelationcubeComponent } from '../equipment/cubes/relationcube/relationcube.component';
-import { OperationcubeComponent } from '../equipment/cubes/operationcube/operationcube.component';
-
 import { GreencubeComponent } from './../equipment/cubes/greencube/greencube.component';
 import { BlackcubeComponent } from './../equipment/cubes/blackcube/blackcube.component';
 import { BluecubeComponent } from './../equipment/cubes/bluecube/bluecube.component';
 import { RedcubeComponent } from './../equipment/cubes/redcube/redcube.component';
 
-import { Card } from '../equipment/cards/card/card';
+import { ParencubeComponent } from './../equipment/cubes/parencube/parencube.component';
+
 import { Settings } from '../settings';
 
 import { LocalstorageService } from '../storage/localstorage.service';
@@ -68,6 +61,8 @@ import { TimerComponent } from '../timer/timer.component';
 
 import { ChallengeDialogComponent } from './challengedialog.component';
 import { SettingsDialogComponent } from './settingsdialog.component';
+
+import * as mexp from 'src/app/util/math-expression-evaluator.min.js';
 
 
 
@@ -111,6 +106,7 @@ export class EquationsGameComponent implements OnInit {
 
   all_resources: Array<any>;
   goal_resources: Array<any>;
+  space_resources: Array<any>;
   forbidden_resources: Array<any>;
   permitted_resources: Array<any>;
   required_resources: Array<any>;
@@ -148,6 +144,12 @@ export class EquationsGameComponent implements OnInit {
 
 
     this.goal_resources = [];
+    this.space_resources = [
+      new ParencubeComponent(),
+      new ParencubeComponent()
+    ];
+    this.space_resources[0].cube.face = 0;
+    this.space_resources[1].cube.face = 1;
     this.forbidden_resources = [];
     this.permitted_resources = [];
     this.required_resources = [];
@@ -334,10 +336,12 @@ export class EquationsGameComponent implements OnInit {
         event.currentIndex
       );
     } else {
-      console.log(event.container.id);
+      console.log("Container ID",event.container.id);
+      console.log("Prevoius Container ID",event.previousContainer.id);
       if (
         event.container.id === 'solutionList' ||
-        event.container.id === 'restrictionList'
+        event.container.id === 'restrictionList' ||
+        event.previousContainer.id === 'spaceList'
       ) {
         copyArrayItem(
           event.previousContainer.data,
@@ -546,9 +550,16 @@ export class EquationsGameComponent implements OnInit {
     return 'rotate(' + (1 + baseInt + flipInt) * negInt + 'deg)';
   }
 
-  calculateGoal() { // @todo fix to calculate goal from dice
-
-    return [0];
+  calculateGoal() { // @todo fix to calculate goal from dice cv.faces[cv.face]['value']
+    var goalStr = this.goal_resources.reduce( (pv, cv) => pv + cv.cube.faces[cv.cube.face]['value'], '');
+    goalStr = goalStr.replace(/([0-9]+)(root)([0-9]+)/g, 'nroot($3,$1)');
+    console.log(goalStr)
+    try {
+      return mexp.eval(goalStr);
+    } catch (e) {
+      console.log(e);
+      return 0
+    }
   }
 
   setPlayerColors() {
