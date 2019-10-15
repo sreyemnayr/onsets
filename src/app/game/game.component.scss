@@ -32,9 +32,9 @@
 
 .dragme.paren {
 
-  border: 1px #fff solid;
+  border: 1px rgba(255,255,255,0.2) solid;
   width:10px;
-  background: transparent;
+  background: rgba(255,255,255,0.1);
   color: #fff;
 
   @media (min-width: 768px)  {

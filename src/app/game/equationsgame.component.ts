@@ -146,10 +146,9 @@ export class EquationsGameComponent implements OnInit {
     this.goal_resources = [];
     this.space_resources = [
       new ParencubeComponent(),
-      new ParencubeComponent()
     ];
-    this.space_resources[0].cube.face = 0;
-    this.space_resources[1].cube.face = 1;
+    this.space_resources[0].cube.face = 2;
+
     this.forbidden_resources = [];
     this.permitted_resources = [];
     this.required_resources = [];
@@ -276,6 +275,10 @@ export class EquationsGameComponent implements OnInit {
     this.goal = [0];
     this.goal_resources.length = 0;
     this.goal_resources = [];
+    this.space_resources = [
+      new ParencubeComponent(),
+    ];
+    this.space_resources[0].cube.face = 2;
     this.forbidden_resources = [];
     this.permitted_resources = [];
     this.required_resources = [];
@@ -525,14 +528,19 @@ export class EquationsGameComponent implements OnInit {
   calculateValue(cubeArray: Array<any>, number = 0) {
     if (cubeArray.length > 0) {
       const c = cubeArray[0].cube;
-      if (c.invert) {
-        return parseInt(c.faces[c.face]['value'], 10) * -1;
-      } else {
-        return parseInt(c.faces[c.face]['value'], 10);
-      }
+      return c.value;
     } else {
       return number;
     }
+  }
+
+  spaceCubesChallenge() {
+    this.space_resources = [
+      new ParencubeComponent(),
+      new ParencubeComponent(),
+    ];
+    this.space_resources[0].cube.face = 0;
+    this.space_resources[1].cube.face = 1;
   }
 
   randomRotate() {
@@ -550,15 +558,79 @@ export class EquationsGameComponent implements OnInit {
     return 'rotate(' + (1 + baseInt + flipInt) * negInt + 'deg)';
   }
 
-  calculateGoal() { // @todo fix to calculate goal from dice cv.faces[cv.face]['value']
-    var goalStr = this.goal_resources.reduce( (pv, cv) => pv + cv.cube.faces[cv.cube.face]['value'], '');
-    goalStr = goalStr.replace(/([0-9]+)(root)([0-9]+)/g, 'nroot($3,$1)');
-    console.log(goalStr)
+  calculateSolution() {
+    let solStr = this.solution_resources.reduce( (pv, cv) => pv + cv.cube.value, '');
+    solStr = solStr.replace(/([0-9]+)(root)([0-9]+)/g, 'nroot($3,$1)');
     try {
-      return mexp.eval(goalStr);
+      return mexp.eval(solStr);
     } catch (e) {
       console.log(e);
-      return 0
+      return NaN;
+    }
+  }
+
+  evaluateGoalSpaces(goalStr) {
+    if ( ~goalStr.indexOf('_')) {
+      if ( ~goalStr.indexOf('root')) {
+        // figure out how to deal with root_9+6_*2 = root( (9+6) * 2 ) OR root(9+6) * 2
+        // until then...
+        return [goalStr.replace('_', '')]
+
+      } else {
+        const c = goalStr.split( '_' );
+        const b = c.join( '(' ) + ')'.repeat(c.length - 1);
+        return [goalStr]
+      }
+
+    } else {
+      return [goalStr]
+    }
+
+  }
+
+  detectValidSentence(valuesArray) {
+    try {
+      mexp.eval(valuesArray.join(''))
+      return true
+    } catch (e) {
+      return false
+    }
+  }
+
+  interpretSentences(valuesArray) {
+    const groups = []
+    console.log(valuesArray)
+    while ( ~valuesArray.indexOf('_') ) {
+      groups.push( valuesArray.splice(0, valuesArray.indexOf('_')) )
+      console.log("after splice", valuesArray)
+      valuesArray.shift()
+    }
+    groups.push(valuesArray)
+    const retGroups = groups.map( g => {
+      if ( this.detectValidSentence(g) ) {
+        g.unshift('(')
+        g.push(')')
+      }
+      return g
+    } )
+    console.log(retGroups)
+
+  }
+
+  calculateGoal() { // @todo fix to calculate goal from dice cv.faces[cv.face]['value']
+    const valuesArray = this.goal_resources.map( c => c.cube.value )
+    let goalStr = this.goal_resources.reduce( (pv, cv) => pv + cv.cube.value, '');
+    this.interpretSentences(valuesArray)
+
+    goalStr = goalStr.replace(/([0-9]+)(root)([0-9]+)/g, 'nroot($3,$1)');
+    console.log(goalStr)
+
+    try {
+      console.log(mexp.lex(goalStr).toPostfix())
+      return [mexp.eval(goalStr)];
+    } catch (e) {
+      console.log(e);
+      return [0];
     }
   }
 
@@ -626,15 +698,14 @@ export class EquationsGameComponent implements OnInit {
   }
 
   checkSolution() {
-    // const permutation = this.ps.hashCubes(this.solution_resources);
-    // const perm_set = this.checkPermutationValue(permutation);
-    // console.log(perm_set);
-    /*if (perm_set.size === this.goal) {
+   // const permutation = this.ps.hashCubes(this.solution_resources);
+   // const perm_set = this.checkPermutationValue(permutation);
+   // console.log(perm_set);
+    if (this.goal.includes(this.calculateSolution())) {
       this.snackBar.open('Correct!');
     } else {
       this.snackBar.open('Incorrect!');
-    }*/
-    this.snackBar.open('Solution check not working yet');
+    }
   }
 
   cyclePlayers() {

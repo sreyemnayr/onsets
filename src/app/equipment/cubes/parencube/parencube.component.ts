@@ -6,7 +6,7 @@ import {CubeComponent} from '../cube.component';
   selector: 'app-parencube',
   templateUrl: '../cube.component.html',
   styleUrls: ['./parencube.component.scss'],
-  host: {'class': 'paren'}
+
 })
 export class ParencubeComponent extends CubeComponent  {
   cube: Cube;
@@ -18,6 +18,7 @@ export class ParencubeComponent extends CubeComponent  {
                   faces: [
                   {klass: 'paren', value: '(', functions_as: PUNCTUATION},
                   {klass: 'paren', value: ')', functions_as: PUNCTUATION},
+                  {klass: 'paren', value: '_', label: ' ', functions_as: PUNCTUATION},
 
       ]});
   }
