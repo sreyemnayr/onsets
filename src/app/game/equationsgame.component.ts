@@ -53,7 +53,7 @@ import {
 } from '@angular/material';
 import { FormControl } from '@angular/forms';
 import { CUBE } from '../equipment/cubes/cube.component';
-import { Cube } from '../equipment/cubes/cube';
+import { Cube, OPERATOR, IDENTIFIER } from '../equipment/cubes/cube';
 import { FACES, PermutationsService } from '../algorithms/permutations.service';
 import { SetsService } from '../algorithms/sets.service';
 
@@ -721,9 +721,20 @@ export class EquationsGameComponent implements OnInit {
           const challenge_check = this.check_for_challenge();
           if (!challenge_check) {
             if (!this.goalSet) {
+
               setTimeout(() => {
                 // this.goal_resources[3].push(this.number_resources.pop());
-                this.goal_resources.push(this.all_resources.pop());
+                for (let i = 0; i < this.all_resources.length; i++) {
+                  if (this.goal_resources.length < 3) {
+                  if ( (this.goal_resources.length !== 1 && this.all_resources[i].cube.functions_as === IDENTIFIER) ||
+                       (this.goal_resources.length === 1 && this.all_resources[i].cube.functions_as === OPERATOR && i < (this.all_resources.length - 1) ) ) {
+                    this.goal_resources.push(this.all_resources.splice(i, 1)[0])
+                    i--;
+                  }
+                }
+
+                }
+
                 this.goal = this.calculateGoal();
                 this.goalSet = true;
                 this.cyclePlayers();

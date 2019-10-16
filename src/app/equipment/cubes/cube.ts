@@ -49,6 +49,9 @@ export class Cube {
       this.faces[this.face].inverse_value :
       this.faces[this.face].value;
   }
+  get functions_as(): number {
+    return this.faces[this.face].functions_as
+  }
   constructor({
                 klass= 'traditional',
                 sides= 6,
