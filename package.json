@@ -29,7 +29,7 @@
     "mathjs": "^6.2.2",
     "ng-dynamic-component": "^5.0.0",
     "ngx-webstorage-service": "^4.1.0",
-    "node-sass": "^4.12.0",
+    "node-sass": "^4.13.1",
     "rxjs": "~6.5.3",
     "tslib": "^1.10.0",
     "zone.js": "^0.10.2"
